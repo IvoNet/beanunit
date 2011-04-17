@@ -7,7 +7,7 @@ import builder.AddressDto;
 /**
  * Holds information about a building. Immutable
  */
-public final class BuildingDto {
+public final class NotImmutableBuildingDto {
 
     private AddressDto address;
     private final BigDecimal insuredAmount;
@@ -15,9 +15,9 @@ public final class BuildingDto {
     private final Boolean owner;
     private final Boolean rented;
 
-    public BuildingDto(final AddressDto address, final BigDecimal insuredAmount,
-                       final String industrialClassificationChambersOfCommerceDescription, final Boolean owner,
-                       final Boolean rented) {
+    public NotImmutableBuildingDto(final AddressDto address, final BigDecimal insuredAmount,
+                                   final String industrialClassificationChambersOfCommerceDescription,
+                                   final Boolean owner, final Boolean rented) {
         this.address = address;
         this.insuredAmount = insuredAmount;
         this.industrialClassificationChambersOfCommerceDescription = industrialClassificationChambersOfCommerceDescription;
@@ -39,6 +39,7 @@ public final class BuildingDto {
         return this.insuredAmount;
     }
 
+    //Makes it not immutable
     public void setAddress(final AddressDto address) {
         this.address = address;
     }
@@ -67,7 +68,7 @@ public final class BuildingDto {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
-        sb.append("BuildingDto");
+        sb.append("NotImmutableBuildingDto");
         sb.append("{address=").append(address);
         sb.append(", insuredAmount=").append(insuredAmount);
         sb.append(", industrialClassificationChambersOfCommerceDescription='")

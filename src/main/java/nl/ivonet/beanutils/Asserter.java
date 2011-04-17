@@ -23,14 +23,19 @@ import java.util.TreeSet;
  * Parent class for all Asserters.
  * This class implements all the plumbing code to make the work of the other {@link nl.ivonet.beanutils.Asserter}s
  * easier.
+ * <p/>
+ * One can (de)register basic type arguments
+ * <p/>
+ * Note that if used in a test with the Before annotation to register new type it is good practice to de-register them
+ * in the After annotation.
  *
  * @author Ivo Woltring
  */
 public abstract class Asserter {
     private static final float FLOAT = 3.14159F;
     private static final double DOUBLE = 3.14159;
-    private static final long LONG = 10L;
-    static final int TEST_ARRAY_SIZE = 10;
+    private static final long LONG = 42L;
+    static final int TEST_ARRAY_SIZE = 42;
     static final String JAVA_LANG_OBJECT = "java.lang.Object";
     static final Map<Class, Object> TYPE_ARGUMENTS = new HashMap<Class, Object>();
 
@@ -45,13 +50,13 @@ public abstract class Asserter {
         TYPE_ARGUMENTS.put(Boolean.TYPE, true);
         TYPE_ARGUMENTS.put(Character.class, 'Z');
         TYPE_ARGUMENTS.put(Character.TYPE, 'Z');
-        TYPE_ARGUMENTS.put(Byte.class, (byte) 10);
-        TYPE_ARGUMENTS.put(Byte.TYPE, (byte) 10);
-        TYPE_ARGUMENTS.put(Short.class, (short) 10);
+        TYPE_ARGUMENTS.put(Byte.class, (byte) 42);
+        TYPE_ARGUMENTS.put(Byte.TYPE, (byte) 42);
+        TYPE_ARGUMENTS.put(Short.class, (short) 42);
         TYPE_ARGUMENTS.put(String.class, "String");
-        TYPE_ARGUMENTS.put(Short.TYPE, (short) 10);
-        TYPE_ARGUMENTS.put(Integer.class, 10);
-        TYPE_ARGUMENTS.put(Integer.TYPE, 10);
+        TYPE_ARGUMENTS.put(Short.TYPE, (short) 42);
+        TYPE_ARGUMENTS.put(Integer.class, 42);
+        TYPE_ARGUMENTS.put(Integer.TYPE, 42);
         TYPE_ARGUMENTS.put(Long.class, LONG);
         TYPE_ARGUMENTS.put(Long.TYPE, LONG);
         TYPE_ARGUMENTS.put(Float.class, FLOAT);
@@ -64,9 +69,19 @@ public abstract class Asserter {
         TYPE_ARGUMENTS.put(Calendar.class, Calendar.getInstance());
     }
 
+    /**
+     * The unmodifiable version of the TYPE_ARGUMENTS list used to reset all values when it is wanted.
+     */
     static final Map<Class, Object> DEFAULT_TYPE_ARGUMENTS = Collections
                                                                      .unmodifiableMap(new HashMap<Class, Object>(TYPE_ARGUMENTS));
 
+    /**
+     * Retrieves the default value based on a Type.
+     * The default values are listed in the TYPE_ARGUMENTS list.
+     *
+     * @param type the Type (Class) to get the default value for
+     * @return an instance of the wanted type with a default value.
+     */
     static Object retrieveDefaultValueByType(final Class type) {
         final Object arg;
         if (type.isArray()) {
@@ -81,6 +96,7 @@ public abstract class Asserter {
         return arg;
     }
 
+    //Tries to invoke the default constructor even if this constructor is private.
     private static Object invokeDefaultConstructorEvenIfPrivate(final Class type) {
         try {
             final Constructor ctor = type.getDeclaredConstructor();
@@ -112,7 +128,7 @@ public abstract class Asserter {
     }
 
     /**
-     * Resets the types and default arguments.
+     * Resets the types and default arguments to the original list.
      */
     public static void resetToDefaultTypes() {
         TYPE_ARGUMENTS.clear();

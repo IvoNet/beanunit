@@ -5,9 +5,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import builder.AddressDto;
-import immutable.BuildingDto;
 import immutable.BusinessLocationDto;
 import immutable.InventoryDto;
+import immutable.NotImmutableBuildingDto;
 
 /**
  * Unit tests for the {@link SimplePojoContractAsserter} class.
@@ -29,7 +29,7 @@ public class ConstructorImmutableBeanAsserterTest {
 
     @Test(expected = AssertionError.class)
     public void testImmutableObjectThatIsNotImmutable() {
-        ConstructorImmutableBeanAsserter.assertGettersOnConstructorImmutableObject(BuildingDto.class);
+        ConstructorImmutableBeanAsserter.assertGettersOnConstructorImmutableObject(NotImmutableBuildingDto.class);
     }
 
     @Test

@@ -20,6 +20,19 @@ import static org.junit.Assert.fail;
 
 /**
  * Test utility class that makes easy work of testing default behavior pojos (beans).
+ * <p/>
+ * The assertBasicGetterSetterBehavior methods will try to assert that the normal Bean (POJO)
+ * specifications and rules are upheld.
+ * <p/>
+ * Getters should exactly return what setters set.
+ * Write methods should have read methods and vice versa.
+ * <p/>
+ * The assertEqualsHashCode method will try to assert that the rules around these methods are upheld.
+ * <p/>
+ * If equals has been overridden the hashCode method must also be overridden and vise versa.
+ * If an object is equal the hashcode must also be the same for both objects, etc.
+ *
+ * @author Ivo Woltring
  */
 @SuppressWarnings({"unchecked"})
 public final class SimplePojoContractAsserter extends Asserter {

@@ -17,14 +17,35 @@ import static org.junit.Assert.fail;
 
 /**
  * Test utility for testing beans that are immutable after construction.
- * Construction must be done by a constructor for the tests in this class to work.
+ * Complete construction must be done by a constructor for the tests in this class to work.
+ * <p/>
+ * Construction of the immutable object is done by reflection and providing default types with values.
+ * <p/>
+ * This class tries to assert that behavior of the bean after construction is valid.
+ * There should be no write methods in the class under test.
+ * All attributes should have read methods.
+ * All read methods (getters) should return the default value provided for the return type.
+ * <p/>
+ * Attributes can be excluded by providing their string representation as a parameter to the method.
  *
  * @author Ivo Woltring
  */
 public class ConstructorImmutableBeanAsserter extends Asserter {
+
     private ConstructorImmutableBeanAsserter() {
+        //All static so don't create
     }
 
+    /**
+     * Asserts that the Getters return the default value for the return type of the getter.
+     * Asserts that the object can be created by providing default values for the wanted types to the constructor.
+     * Asserts that the object does not have write methods (= immutable) for the member variables.
+     * Tries to do all this for all available constructors.
+     *
+     * @param classUnderTest     the {@link Class} to test
+     * @param excludedProperties property to exclude from testing if some of the rules are not nicely upheld :-)
+     * @param <T>                the type of the class under test.
+     */
     public static <T> void assertGettersOnConstructorImmutableObject(final Class<T> classUnderTest,
                                                                      final String... excludedProperties) {
         final List<String> blacklist = new ArrayList<String>(Arrays.asList(excludedProperties));
@@ -82,56 +103,5 @@ public class ConstructorImmutableBeanAsserter extends Asserter {
         fail("No object created");
         return null;
     }
-
-    //TODO Finish the code below
-//    public static <T, B> void assertEqualsHashCode(final Class<T> classUnderTest, final Class<B> builderUnderTest,
-//                                                   final String... excludedProperties) {
-//
-//        try {
-//            final B builder = builderUnderTest.newInstance();
-//            final Method build = builderUnderTest.getMethod("build");
-//
-//            final T one = (T) build.invoke(builder);
-//            //test
-//        } catch (IllegalAccessException e) {
-//            e.printStackTrace();
-//        } catch (InstantiationException e) {
-//            e.printStackTrace();
-//        } catch (NoSuchMethodException e) {
-//            e.printStackTrace();
-//        } catch (InvocationTargetException e) {
-//            e.printStackTrace();
-//        }
-//
-//    }
-
-    //TODO finish the code below
-//    public static <T> void assertEqualsHashCode(final Class<T> classUnderTest, final String... excludedProperties) {
-//        final List<String> blacklist = Arrays.asList(excludedProperties);
-//
-//        final Class[] nested = classUnderTest.getDeclaredClasses();
-//        for (final Class aClass : nested) {
-//            if (Modifier.isStatic(aClass.getModifiers())) {
-//                if (aClass.getName().endsWith(BUILDER)) {
-//
-//                    System.out.println(String.format("Builder found in class [%s] named [%s]", classUnderTest.getName(),
-//                                                            aClass.getName()));
-//
-//                    try {
-//                        final Method build = aClass.getMethod("build");
-//
-//                        build.invoke(aClass);
-//                    } catch (NoSuchMethodException e) {
-//                        LOG.error("No build method found in the static inner class.");
-//                    } catch (InvocationTargetException e) {
-//                        LOG.error("Could not invoke the build method of the Builder");
-//                    } catch (IllegalAccessException e) {
-//                        LOG.error("Illegal Access Exception");
-//                    }
-//                    break;
-//                }
-//            }
-//        }
-//    }
 
 }
