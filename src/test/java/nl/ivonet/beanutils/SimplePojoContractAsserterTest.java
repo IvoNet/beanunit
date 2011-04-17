@@ -1,9 +1,14 @@
 package nl.ivonet.beanutils;
 
+import java.sql.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.Test;
 
 import simplepojo.Address;
 import simplepojo.Person;
+import simplepojo.PrivateConstructor;
 import simplepojo.SimpleBean;
 import simplepojo.WrongSinpleBean;
 import simplepojo.ZipCode;
@@ -63,5 +68,19 @@ public class SimplePojoContractAsserterTest {
         assertBasicGetterSetterBehaviorWithBlacklist(Person.class, "name", "birthDate");
         assertBasicGetterSetterBehaviorWithBlacklist(Address.class, "zip");
         assertBasicGetterSetterBehaviorWithBlacklist(SimpleBean.class, "times");
+    }
+
+    @Test
+    public void testOtherThanDefaultProperties() throws Exception {
+        Map<String, Object> properties = new HashMap<String, Object>();
+        properties.put("name", "Piet");
+        properties.put("birthDate", Date.valueOf("2011-04-11"));
+        assertBasicGetterSetterBehavior(Person.class, properties);
+
+    }
+
+    @Test(expected = AssertionError.class)
+    public void testPrivateConstructor() throws Exception {
+        assertBasicGetterSetterBehavior(PrivateConstructor.class);
     }
 }

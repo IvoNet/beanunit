@@ -28,8 +28,8 @@ public class Person {
         this.birthDate = birthDate;
     }
 
+    @SuppressWarnings({"unchecked"})
     public List<Address> getAddress() {
-        //noinspection unchecked
         return address == null ? Collections.EMPTY_LIST : address;
     }
 

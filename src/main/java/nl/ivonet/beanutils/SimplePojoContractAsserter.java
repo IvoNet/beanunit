@@ -8,7 +8,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -39,16 +38,17 @@ public final class SimplePojoContractAsserter extends Asserter {
      * <p/> Uses a default argument for basic collection types, primitive types, Dates, java.sql.Dates, and Timestamps.
      * See {@link SimplePojoContractAsserter#TYPE_ARGUMENTS}.
      *
-     * @param target   the object on which to invoke the getter and setter
-     * @param property the property name, e.g. "firstName"
+     * @param classUnderTest the object on which to invoke the getter and setter
+     * @param property       the property name, e.g. "firstName"
      */
-    public static <T> void assertBasicGetterSetterBehavior(final Class<T> target, final String property) {
-        assertBasicGetterSetterBehavior(target, property, null);
+    public static <T> void assertBasicGetterSetterBehavior(final Class<T> classUnderTest, final String property) {
+        assertBasicGetterSetterBehavior(classUnderTest, property, null);
     }
 
     /**
-     * See {@link #assertBasicGetterSetterBehavior(Class, String...)} method. Only difference is that here we accept an
-     * explicit argument for the setter method.
+     * The method that does the actual assertion work.
+     * <p/>
+     * It checks the getter and setter behavior of the property against the argument.
      *
      * @param classUnderTest the object on which to invoke the getter and setter
      * @param property       the property name, e.g. "firstName"
@@ -57,7 +57,7 @@ public final class SimplePojoContractAsserter extends Asserter {
     public static <T> void assertBasicGetterSetterBehavior(final Class<T> classUnderTest, final String property,
                                                            final Object argument) {
         try {
-            final T object = classUnderTest.newInstance();
+            final T testObject = classUnderTest.newInstance();
             final PropertyDescriptor descriptor = new PropertyDescriptor(property, classUnderTest);
             Object arg = argument;
             final Class type = descriptor.getPropertyType();
@@ -68,8 +68,8 @@ public final class SimplePojoContractAsserter extends Asserter {
             final Method writeMethod = descriptor.getWriteMethod();
             final Method readMethod = descriptor.getReadMethod();
 
-            writeMethod.invoke(object, arg);
-            final Object propertyValue = readMethod.invoke(object);
+            writeMethod.invoke(testObject, arg);
+            final Object propertyValue = readMethod.invoke(testObject);
             if (type.isPrimitive()) {
                 assertEquals(property + " getter/setter failed test", arg, propertyValue);
             } else {
@@ -96,56 +96,54 @@ public final class SimplePojoContractAsserter extends Asserter {
     }
 
     /**
-     * See {@link #assertBasicGetterSetterBehavior(Class, String...)} method. Only difference is that here we accept a map
-     * containing property name/value pairs. Use this to test a bunch of property accessors at once. Note that the
-     * values in the map can be null, and in that case we'll try to supply a default argument.
-     *
-     * @param target     the object on which to invoke the getter and setter
-     * @param properties map of property names to argument values
+     * @param classUnderTest the object on which to invoke the getter and setter
+     * @param properties     map of property names to argument values
+     * @see {@link #assertBasicGetterSetterBehavior(Class, String, Object)} method. Only difference is that here we accept a map
+     *      containing property name/value pairs. Use this to test a bunch of property accessors at once. Note that the
+     *      values in the map can be null, and in that case we'll try to supply a default argument.
      */
-    public static <T> void assertBasicGetterSetterBehavior(final Class<T> target,
+    public static <T> void assertBasicGetterSetterBehavior(final Class<T> classUnderTest,
                                                            final Map<String, Object> properties) {
         final Set<Map.Entry<String, Object>> entries = properties.entrySet();
         for (final Map.Entry<String, Object> entry : entries) {
-            assertBasicGetterSetterBehavior(target, entry.getKey(), entry.getValue());
+            assertBasicGetterSetterBehavior(classUnderTest, entry.getKey(), entry.getValue());
         }
     }
 
+//    /**
+//     * See {@link #assertBasicGetterSetterBehavior(Class, String...)} method. Only difference is that here we accept an
+//     * array of property names. Use this to test a bunch of property accessors at once, using default arguments.
+//     *
+//     * @param classUnderTest        the object on which to invoke the getter and setter
+//     * @param propertyNames the names of the propertyes you want to test
+//     */
+//    public static <T> void assertBasicGetterSetterBehavior(final Class<T> classUnderTest, final String... propertyNames) {
+//        final Map<String, Object> properties = new LinkedHashMap<String, Object>();
+//        for (final String propertyName : propertyNames) {
+//            properties.put(propertyName, null);
+//        }
+//        assertBasicGetterSetterBehavior(classUnderTest, properties);
+//    }
+//
+
     /**
-     * See {@link #assertBasicGetterSetterBehavior(Class, String...)} method. Only difference is that here we accept an
-     * array of property names. Use this to test a bunch of property accessors at once, using default arguments.
-     *
-     * @param target        the object on which to invoke the getter and setter
-     * @param propertyNames the names of the propertyes you want to test
+     * @param classUnderTest the object on which to invoke the getter and setter
+     * @see {@link #assertBasicGetterSetterBehavior(Class, String, Object)} method. No items are blacklisted.
      */
-    public static <T> void assertBasicGetterSetterBehavior(final Class<T> target, final String... propertyNames) {
-        final Map<String, Object> properties = new LinkedHashMap<String, Object>();
-        for (final String propertyName : propertyNames) {
-            properties.put(propertyName, null);
-        }
-        assertBasicGetterSetterBehavior(target, properties);
+    public static <T> void assertBasicGetterSetterBehavior(final Class<T> classUnderTest) {
+        assertBasicGetterSetterBehaviorWithBlacklist(classUnderTest);
     }
 
     /**
-     * See {@link #assertBasicGetterSetterBehavior(Class, String...)} method. No items are blacklisted.
-     *
-     * @param target the object on which to invoke the getter and setter
-     */
-    public static <T> void assertBasicGetterSetterBehavior(final Class<T> target) {
-        assertBasicGetterSetterBehaviorWithBlacklist(target);
-    }
-
-    /**
-     * See {@link #assertBasicGetterSetterBehavior(Class, String...)} method. Big difference here is that we try to
-     * automatically introspect the target object, finding read/write properties, and automatically testing the getter
-     * and setter. Note specifically that read-only properties are ignored, as there is no way for us to know how to set
-     * the value (since there isn't a public setter).
-     * <p/>
-     * Any property names contained in the blacklist will be skipped.
-     * <p/>
-     *
      * @param classUnderTest the object on which to invoke the getter and setter
      * @param propertyNames  the list of property names that should not be tested
+     * @see {@link #assertBasicGetterSetterBehavior(Class, String, Object)} method. Big difference here is that we try to
+     *      automatically introspect the target object, finding read/write properties, and automatically testing the getter
+     *      and setter. Note specifically that read-only properties are ignored, as there is no way for us to know how to set
+     *      the value (since there isn't a public setter).
+     *      <p/>
+     *      Any property names contained in the blacklist will be skipped.
+     *      <p/>
      */
     public static <T> void assertBasicGetterSetterBehaviorWithBlacklist(final Class<T> classUnderTest,
                                                                         final String... propertyNames) {
