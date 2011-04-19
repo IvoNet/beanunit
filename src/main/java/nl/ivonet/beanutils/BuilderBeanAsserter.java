@@ -9,6 +9,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -17,7 +18,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 /**
- * Asserts "simple" beans that are constructed using the "Builder" pattern as documented
+ * Asserts "simple" beans that are constructed using the "Creator" pattern as documented
  * by Joshua Bloch ("Effective Java" - Second Edition).
  * <p/>
  * The Beans constructed this way are after construction immutable or at least that is
@@ -34,28 +35,37 @@ import static org.junit.Assert.fail;
  */
 public class BuilderBeanAsserter extends Asserter {
 
+    private static final String BUILDER_NAME = "Builder";
+    private static final String BUILD_METHOD_NAME = "build";
+
     /**
      * Tests a bean created by a builder.
      *
-     * @param classUnderTest         the class to test
-     * @param builderUnderTest       the builder that creates the classUnderTest
-     * @param excludedBuilderMethods propertyes to exclude from the test
-     * @param <T>                    the type of the classUnderTest
-     * @param <B>                    the type of the builder
+     * @param classUnderTest          the class to test
+     * @param builderUnderTest        the builder that creates the classUnderTest
+     * @param buildMethodName         the name of the method that builds the classUnderTest
+     * @param excludedBuilderMethods  properties to exclude from the test in the builder
+     * @param excludedClassProperties properties to exclude from the test in de class under test
+     * @param <T>                     the type of the classUnderTest
+     * @param <B>                     the type of the builder
      */
     public static <T, B> void assertBuildObjectGetterBehavior(final Class<T> classUnderTest,
                                                               final Class<B> builderUnderTest,
-                                                              final String... excludedBuilderMethods) {
+                                                              final String buildMethodName,
+                                                              final List<String> excludedBuilderMethods,
+                                                              final List<String> excludedClassProperties) {
+        final List<String> blacklistBuilderMethods = new ArrayList<String>(excludedBuilderMethods);
+        blacklistBuilderMethods.add("class");
 
-        final List<String> blacklist = new ArrayList<String>(Arrays.asList(excludedBuilderMethods));
-        blacklist.add("class");
+        final List<String> blackListClassProperties = new ArrayList<String>(excludedClassProperties);
+        blackListClassProperties.add("class");
 
         try {
             final Constructor[] constructors = builderUnderTest.getDeclaredConstructors();
             if (constructors.length > 1) {
                 fail("There should only be one constructor in a Builder class");
             }
-            final Method buildMethod = builderUnderTest.getMethod("build");
+            final Method buildMethod = builderUnderTest.getMethod(buildMethodName);
 
             @SuppressWarnings({"unchecked"})
             final B builder = (B) Asserter.createObject(constructors[0]);
@@ -64,13 +74,12 @@ public class BuilderBeanAsserter extends Asserter {
             assertFalse("There should be builder methods ", methods.length == 0);
             boolean hasBuilderMethods = false;
             for (final Method method : methods) {
-                if (blacklist.contains(method.getName())) {
-                    continue;
-                }
-
                 if (builderUnderTest.getSimpleName().equals(method.getReturnType().getSimpleName())) {
-                    method.invoke(builder, createMethodParameterList(method));
                     hasBuilderMethods = true;
+                    if (blacklistBuilderMethods.contains(method.getName())) {
+                        continue;
+                    }
+                    method.invoke(builder, createMethodParameterList(method));
                 }
             }
             assertTrue("No builder methods found in the builder. Do the builder methods have the Builder as returnType?",
@@ -84,7 +93,7 @@ public class BuilderBeanAsserter extends Asserter {
                 if (descriptor.getWriteMethod() != null) {
                     fail("This object is not immutable. It has a writeMethod for: " + descriptor.getName());
                 }
-                if (blacklist.contains(descriptor.getDisplayName())) {
+                if (blackListClassProperties.contains(descriptor.getDisplayName())) {
                     continue;
                 }
 
@@ -104,4 +113,100 @@ public class BuilderBeanAsserter extends Asserter {
         }
     }
 
+    /**
+     * Tests a Bean created with a Builder.
+     * <p/>
+     * This test assumes that the builder is called "Builder" and the build method is called "build"
+     *
+     * @param classUnderTest the class to test
+     * @param <T>            the type of the classUnderTest
+     */
+    public static <T> void assertBuildObjectGetterBehavior(final Class<T> classUnderTest) {
+
+        final Class<?> builder = findBuilder(classUnderTest);
+        assertBuildObjectGetterBehavior(classUnderTest, builder, BUILD_METHOD_NAME, Collections.<String>emptyList(),
+                                               Collections.<String>emptyList());
+
+    }
+
+    /**
+     * Tests a Bean created with a Builder.
+     * <p/>
+     * This method accepts the a different Builder name than the default.
+     *
+     * @param classUnderTest      the class to test
+     * @param exclusionProperties class under test properties to exclude from the test
+     * @param <T>                 the type of the classUnderTest
+     */
+    public static <T> void assertBuildObjectGetterBehavior(final Class<T> classUnderTest,
+                                                           final String... exclusionProperties) {
+
+        assertBuildObjectGetterBehavior(classUnderTest, findBuilder(classUnderTest), BUILD_METHOD_NAME,
+                                               Collections.<String>emptyList(), Arrays.asList(exclusionProperties));
+
+    }
+
+    /**
+     * Tests a Bean created with a Builder.
+     * <p/>
+     * This method accepts the a different Builder name than the default.
+     *
+     * @param classUnderTest   the class to test
+     * @param builderUnderTest the builder that creates the classUnderTest
+     * @param <T>              the type of the classUnderTest
+     * @param <B>              the type of the builder
+     */
+    public static <T, B> void assertBuildObjectGetterBehavior(final Class<T> classUnderTest,
+                                                              final Class<B> builderUnderTest) {
+
+        assertBuildObjectGetterBehavior(classUnderTest, builderUnderTest, BUILD_METHOD_NAME,
+                                               Collections.<String>emptyList(), Collections.<String>emptyList());
+
+    }
+
+    /**
+     * Tests a Bean created with a Builder.
+     * <p/>
+     * This method accepts the a different Builder name than the default.
+     *
+     * @param classUnderTest      the class to test
+     * @param builderUnderTest    the builder that creates the classUnderTest
+     * @param exclusionProperties the properties to ignore on the class under test.
+     * @param <T>                 the type of the classUnderTest
+     * @param <B>                 the type of the builder
+     */
+    public static <T, B> void assertBuildObjectGetterBehavior(final Class<T> classUnderTest,
+                                                              final Class<B> builderUnderTest,
+                                                              final String... exclusionProperties) {
+
+        assertBuildObjectGetterBehavior(classUnderTest, builderUnderTest, BUILD_METHOD_NAME,
+                                               Collections.<String>emptyList(), Arrays.asList(exclusionProperties));
+    }
+
+    /**
+     * Tests a Bean created with a Builder.
+     * <p/>
+     * This method accepts the a different Builder name than the default.
+     *
+     * @param classUnderTest       the class to test
+     * @param exclusionMethodNames the properties to ignore on the builder under test.
+     * @param <T>                  the type of the classUnderTest
+     */
+    public static <T> void assertBuildObjectGetterBehavior(final Class<T> classUnderTest,
+                                                           final List<String> exclusionMethodNames) {
+
+        assertBuildObjectGetterBehavior(classUnderTest, findBuilder(classUnderTest), BUILD_METHOD_NAME,
+                                               exclusionMethodNames, Collections.<String>emptyList());
+    }
+
+    private static Class<?> findBuilder(final Class classUnderTest) {
+        final Class<?>[] declaredClasses = classUnderTest.getDeclaredClasses();
+        for (final Class<?> declaredClass : declaredClasses) {
+            if (BUILDER_NAME.equals(declaredClass.getSimpleName())) {
+                return declaredClass;
+            }
+        }
+        fail("No Build class found.");
+        return null;
+    }
 }

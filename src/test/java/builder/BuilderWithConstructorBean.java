@@ -44,12 +44,10 @@ public final class BuilderWithConstructorBean {
     }
 
     public String getFoo() {
-        System.out.println("getFoo called");
         return foo;
     }
 
     public List<String> getList() {
-        System.out.println("getList called");
         return list;
     }
 }

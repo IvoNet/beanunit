@@ -124,7 +124,7 @@ public final class AddressDto {
     }
 
     /**
-     * Builder for the AddressDto
+     * Creator for the AddressDto
      */
     public static final class Builder {
         private String streetAddition;
