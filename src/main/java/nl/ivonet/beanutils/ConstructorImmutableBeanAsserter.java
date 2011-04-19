@@ -54,13 +54,7 @@ public class ConstructorImmutableBeanAsserter extends Asserter {
         try {
             final Constructor[] constructors = classUnderTest.getDeclaredConstructors();
             for (final Constructor constructor : constructors) {
-                final List arguments = new ArrayList();
-                final Class[] parameterTypes = constructor.getParameterTypes();
-                for (final Class parameterType : parameterTypes) {
-                    //noinspection unchecked
-                    arguments.add(retrieveDefaultValueByType(parameterType));
-                }
-                final Object object = createObject(constructor, arguments.toArray());
+                @SuppressWarnings({"unchecked"}) final T object = (T) createObject(constructor);
 
                 assertNotNull("Could not create the object", object);
 
@@ -79,6 +73,7 @@ public class ConstructorImmutableBeanAsserter extends Asserter {
                     assertEquals(arg, readMethod.invoke(object));
                 }
             }
+
         } catch (InvocationTargetException e) {
             fail(e.getMessage());
         } catch (IntrospectionException e) {
@@ -86,22 +81,6 @@ public class ConstructorImmutableBeanAsserter extends Asserter {
         } catch (IllegalAccessException e) {
             fail(e.getMessage());
         }
-    }
-
-    private static Object createObject(final Constructor constructor, final Object[] arguments) {
-        try {
-            return constructor.newInstance(arguments);
-        } catch (InstantiationException e) {
-            fail(e.getMessage());
-        } catch (IllegalAccessException e) {
-            fail(e.getMessage());
-        } catch (IllegalArgumentException e) {
-            fail(e.getMessage());
-        } catch (InvocationTargetException e) {
-            fail(e.getMessage());
-        }
-        fail("No object created");
-        return null;
     }
 
 }

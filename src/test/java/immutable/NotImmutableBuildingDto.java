@@ -2,8 +2,6 @@ package immutable;
 
 import java.math.BigDecimal;
 
-import builder.AddressDto;
-
 /**
  * Holds information about a building. Immutable
  */
@@ -26,7 +24,7 @@ public final class NotImmutableBuildingDto {
     }
 
     /**
-     * @return {@link builder.AddressDto}
+     * @return {@link AddressDto}
      */
     public AddressDto getAddress() {
         return this.address;

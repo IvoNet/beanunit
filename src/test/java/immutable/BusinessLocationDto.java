@@ -1,7 +1,5 @@
 package immutable;
 
-import builder.AddressDto;
-
 /**
  * Immutable Data transfer object for business location.
  */

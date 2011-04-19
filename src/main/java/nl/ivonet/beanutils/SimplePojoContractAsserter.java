@@ -123,22 +123,6 @@ public final class SimplePojoContractAsserter extends Asserter {
         }
     }
 
-//    /**
-//     * See {@link #assertBasicGetterSetterBehavior(Class, String...)} method. Only difference is that here we accept an
-//     * array of property names. Use this to test a bunch of property accessors at once, using default arguments.
-//     *
-//     * @param classUnderTest        the object on which to invoke the getter and setter
-//     * @param propertyNames the names of the propertyes you want to test
-//     */
-//    public static <T> void assertBasicGetterSetterBehavior(final Class<T> classUnderTest, final String... propertyNames) {
-//        final Map<String, Object> properties = new LinkedHashMap<String, Object>();
-//        for (final String propertyName : propertyNames) {
-//            properties.put(propertyName, null);
-//        }
-//        assertBasicGetterSetterBehavior(classUnderTest, properties);
-//    }
-//
-
     /**
      * @param classUnderTest the object on which to invoke the getter and setter
      * @see {@link #assertBasicGetterSetterBehavior(Class, String, Object)} method. No items are blacklisted.

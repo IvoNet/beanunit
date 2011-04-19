@@ -1,4 +1,4 @@
-package builder;
+package immutable;
 
 /**
  * Immutalable class which holds information about an address

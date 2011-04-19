@@ -1,5 +1,21 @@
 package nl.ivonet.beanutils;
 
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 /**
  * Asserts "simple" beans that are constructed using the "Builder" pattern as documented
  * by Joshua Bloch ("Effective Java" - Second Edition).
@@ -18,55 +34,74 @@ package nl.ivonet.beanutils;
  */
 public class BuilderBeanAsserter extends Asserter {
 
-    //TODO Finish the code below
-//    public static <T, B> void assertEqualsHashCode(final Class<T> classUnderTest, final Class<B> builderUnderTest,
-//                                                   final String... excludedProperties) {
-//
-//        try {
-//            final B builder = builderUnderTest.newInstance();
-//            final Method build = builderUnderTest.getMethod("build");
-//
-//            final T one = (T) build.invoke(builder);
-//            //test
-//        } catch (IllegalAccessException e) {
-//            e.printStackTrace();
-//        } catch (InstantiationException e) {
-//            e.printStackTrace();
-//        } catch (NoSuchMethodException e) {
-//            e.printStackTrace();
-//        } catch (InvocationTargetException e) {
-//            e.printStackTrace();
-//        }
-//
-//    }
+    /**
+     * Tests a bean created by a builder.
+     *
+     * @param classUnderTest         the class to test
+     * @param builderUnderTest       the builder that creates the classUnderTest
+     * @param excludedBuilderMethods propertyes to exclude from the test
+     * @param <T>                    the type of the classUnderTest
+     * @param <B>                    the type of the builder
+     */
+    public static <T, B> void assertBuildObjectGetterBehavior(final Class<T> classUnderTest,
+                                                              final Class<B> builderUnderTest,
+                                                              final String... excludedBuilderMethods) {
 
-    //TODO finish the code below
-//    public static <T> void assertEqualsHashCode(final Class<T> classUnderTest, final String... excludedProperties) {
-//        final List<String> blacklist = Arrays.asList(excludedProperties);
-//
-//        final Class[] nested = classUnderTest.getDeclaredClasses();
-//        for (final Class aClass : nested) {
-//            if (Modifier.isStatic(aClass.getModifiers())) {
-//                if (aClass.getName().endsWith(BUILDER)) {
-//
-//                    System.out.println(String.format("Builder found in class [%s] named [%s]", classUnderTest.getName(),
-//                                                            aClass.getName()));
-//
-//                    try {
-//                        final Method build = aClass.getMethod("build");
-//
-//                        build.invoke(aClass);
-//                    } catch (NoSuchMethodException e) {
-//                        LOG.error("No build method found in the static inner class.");
-//                    } catch (InvocationTargetException e) {
-//                        LOG.error("Could not invoke the build method of the Builder");
-//                    } catch (IllegalAccessException e) {
-//                        LOG.error("Illegal Access Exception");
-//                    }
-//                    break;
-//                }
-//            }
-//        }
-//    }
+        final List<String> blacklist = new ArrayList<String>(Arrays.asList(excludedBuilderMethods));
+        blacklist.add("class");
+
+        try {
+            final Constructor[] constructors = builderUnderTest.getDeclaredConstructors();
+            if (constructors.length > 1) {
+                fail("There should only be one constructor in a Builder class");
+            }
+            final Method buildMethod = builderUnderTest.getMethod("build");
+
+            @SuppressWarnings({"unchecked"})
+            final B builder = (B) Asserter.createObject(constructors[0]);
+
+            final Method[] methods = builderUnderTest.getDeclaredMethods();
+            assertFalse("There should be builder methods ", methods.length == 0);
+            boolean hasBuilderMethods = false;
+            for (final Method method : methods) {
+                if (blacklist.contains(method.getName())) {
+                    continue;
+                }
+
+                if (builderUnderTest.getSimpleName().equals(method.getReturnType().getSimpleName())) {
+                    method.invoke(builder, createMethodParameterList(method));
+                    hasBuilderMethods = true;
+                }
+            }
+            assertTrue("No builder methods found in the builder. Do the builder methods have the Builder as returnType?",
+                              hasBuilderMethods);
+            @SuppressWarnings({"unchecked"})
+            final T objectUnderTest = (T) buildMethod.invoke(builder);
+
+            final BeanInfo beanInfo = Introspector.getBeanInfo(classUnderTest);
+            final PropertyDescriptor[] descriptors = beanInfo.getPropertyDescriptors();
+            for (final PropertyDescriptor descriptor : descriptors) {
+                if (descriptor.getWriteMethod() != null) {
+                    fail("This object is not immutable. It has a writeMethod for: " + descriptor.getName());
+                }
+                if (blacklist.contains(descriptor.getDisplayName())) {
+                    continue;
+                }
+
+                final Object arg = retrieveDefaultValueByType(descriptor.getPropertyType());
+                final Method readMethod = descriptor.getReadMethod();
+                assertEquals(String.format("Not the expected value for method %s", readMethod.getName()), arg,
+                                    readMethod.invoke(objectUnderTest));
+            }
+        } catch (InvocationTargetException e) {
+            fail(e.getMessage());
+        } catch (NoSuchMethodException e) {
+            fail(e.getMessage());
+        } catch (IntrospectionException e) {
+            fail(e.getMessage());
+        } catch (IllegalAccessException e) {
+            fail(e.getMessage());
+        }
+    }
 
 }

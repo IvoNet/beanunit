@@ -4,7 +4,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import builder.AddressDto;
+import immutable.AddressDto;
 import immutable.BusinessLocationDto;
 import immutable.InventoryDto;
 import immutable.NotImmutableBuildingDto;

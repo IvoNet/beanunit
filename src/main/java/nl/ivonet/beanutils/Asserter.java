@@ -2,6 +2,8 @@ package nl.ivonet.beanutils;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -18,6 +20,8 @@ import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
+
+import static org.junit.Assert.fail;
 
 /**
  * Parent class for all Asserters.
@@ -143,6 +147,67 @@ public abstract class Asserter {
      */
     public static Object defaultArgumentForType(final Class type) {
         return TYPE_ARGUMENTS.get(type);
+    }
+
+    /**
+     * Creates the list of parameters based on default values for a provided constructor.
+     *
+     * @param constructor the constructor to create the parameter list for
+     * @return array with the constructor parameters
+     */
+    static Object[] createConstructorParameterList(final Constructor<?> constructor) {
+        final List arguments = new ArrayList();
+        final Class[] parameterTypes = constructor.getParameterTypes();
+        for (final Class parameterType : parameterTypes) {
+            //noinspection unchecked
+            arguments.add(retrieveDefaultValueByType(parameterType));
+        }
+        return arguments.toArray();
+    }
+
+    /**
+     * Creates the list of parameters for the method based on the default values provided by this class.
+     *
+     * @param method the method to get the parameters for
+     * @return object array containing the default values for the parameters
+     */
+    static Object[] createMethodParameterList(final Method method) {
+        final List arguments = new ArrayList();
+        final Class<?>[] parameterTypes = method.getParameterTypes();
+        for (final Class parameterType : parameterTypes) {
+            //noinspection unchecked
+            arguments.add(retrieveDefaultValueByType(parameterType));
+        }
+        return arguments.toArray();
+    }
+
+    static Object createObject(final Constructor<?> constructor, final Object[] arguments) {
+        //TODO Generify this construction method
+
+        try {
+            return constructor.newInstance(arguments);
+        } catch (InstantiationException e) {
+            fail(e.getMessage());
+        } catch (IllegalAccessException e) {
+            fail(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            fail(e.getMessage());
+        } catch (InvocationTargetException e) {
+            fail(e.getMessage());
+        }
+        fail("No object created");
+        return null;
+    }
+
+    /**
+     * Creates the object belonging to the constructor based on default values.
+     *
+     * @param constructor the constructor to invoke
+     * @return object belonging to the constructor.
+     */
+    static Object createObject(final Constructor<?> constructor) {
+        //TODO Generify this construction method
+        return createObject(constructor, createConstructorParameterList(constructor));
     }
 
 }
