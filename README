@@ -1,1 +1,20 @@
-This file was created by IntelliJ IDEA 10.0.3 for binding GitHub repository
+=========================
+beanunit
+=========================
+Is a unit test extension for testing beans.
+
+=========================
+GOAL
+=========================
+The goal of this jar is to peform useful unit tests on beans of different kinds.
+* Tests that makes easy work of testing default behavior pojos (beans).
+* Tests for testing beans that are immutable after construction.
+* Asserts "simple" beans that are constructed using the "Builder" pattern as documented
+  by Joshua Bloch ("Effective Java" - Second Edition).
+
+
+The actual goal is to make usefull unit tests for objects everybody hates to test because they seem so easy to make
+So why test them?
+This way there is much more tested on these simple objects without sacrificing anything.
+
+ 
