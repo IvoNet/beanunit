@@ -1,8 +1,0 @@
-
-Builder:
-* A Builder has only one constructor
-* A constructor can have parameters
-* A Builder has a build() method if no other is provided
-* Builder methods always have as the return type the Builder itself (this)
-* After the build method is called the resulting Object is immutable
-*

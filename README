@@ -1,20 +1,80 @@
-=========================
-beanunit
-=========================
+===============================================================================
+= beanunit
+===============================================================================
 Is a unit test extension for testing beans.
 
-=========================
-GOAL
-=========================
-The goal of this jar is to peform useful unit tests on beans of different kinds.
-* Tests that makes easy work of testing default behavior pojos (beans).
-* Tests for testing beans that are immutable after construction.
-* Asserts "simple" beans that are constructed using the "Builder" pattern as documented
-  by Joshua Bloch ("Effective Java" - Second Edition).
+The best way to demonstrate the working of this project is to look at the unit tests.
+
+Check out or download the master or one of the latest tags and see for yourself.
+
+If you have great ideas for extending or improving the code please contact me.
+Collaborators are welcome.
 
 
-The actual goal is to make usefull unit tests for objects everybody hates to test because they seem so easy to make
-So why test them?
-This way there is much more tested on these simple objects without sacrificing anything.
+Cheerz,
+Ivo.
 
- 
+Twitter: @IvoNet (or #beanunit in the sentence)
+Contact: http://www.ivonet.nl/home/contact
+
+
+===============================================================================
+= GOAL
+===============================================================================
+The goal of this jar is to perform useful unit tests on beans of different kinds.
+* methods that makes easy work of testing default behavior pojos (beans).
+* methods for testing beans that are immutable after construction.
+* Asserts "simple" beans that are constructed using the "Builder" pattern as
+  documented by Joshua Bloch ("Effective Java" - Second Edition).
+  (see builder package in src/test/java)
+
+
+The actual goal is to make useful unit tests for objects everybody hates to test
+because they seem so easy to make.
+This way there is much more tested on these simple objects without sacrificing
+anything.
+Test coverage is 100% in many cases with almost no effort and I would claim
+that the tests are useful.
+
+===============================================================================
+= RULEZ
+===============================================================================
+The tests done on the beans are described below...
+
+===============================================================================
+== Builder
+===============================================================================
+* A Builder has only one constructor
+* A Builder constructor can have parameters (for mandatory properties)
+* A Builder has a build() method if no other is provided
+* Builder methods always have as the return type the Builder itself (this)
+* After the build method is called the resulting Object is immutable.
+* Can override equals / hashcode
+
+===============================================================================
+== POJO
+===============================================================================
+* Default constructor
+* Bean specification (Getters and Setters for all properties)
+* if equal method overridden / hashCode method must also be overridden
+* if objects are equal the hashCode must also be equal
+
+===============================================================================
+== Immutable constructed beans
+===============================================================================
+* Must be completely constructed by a constructor
+* Must only have Getters after construction
+* Can override equals / hashcode
+
+
+===============================================================================
+= TODO
+===============================================================================
+* automatically test equals / hashcode if they are overridden in the class under
+  test (is a separate test now)
+* test equals / hashcode on Builder build beans.
+* test equals / hashcode on Constructor constructed immutable beans.
+* cleanup code more
+* I'm not a great fan of static code (smells of procedural programming) and I
+  want to look into that. It might be ok for unit testing.
+  If you have an opinion contact me on twitter
