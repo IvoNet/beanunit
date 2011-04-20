@@ -16,18 +16,22 @@
 
 package builder;
 
+import java.util.Date;
+
 /**
  * @author Ivo Woltring
  */
 public final class SimpleBuilderBean {
 
     private final String foo;
+    private final Date date;
 
     /**
      * The Builder for {@link SimpleBuilderBean}.
      */
     public static class Builder {
         private String foo;
+        private Date date;
 
         /**
          * Constructor of the {@link builder.SimpleBuilderBean} class.
@@ -41,6 +45,11 @@ public final class SimpleBuilderBean {
          */
         public final Builder setFoo(final String foo) {
             this.foo = foo;
+            return this;
+        }
+
+        public Builder date(final Date date) {
+            this.date = date;
             return this;
         }
 
@@ -64,9 +73,14 @@ public final class SimpleBuilderBean {
      */
     private SimpleBuilderBean(final Builder builder) {
         this.foo = builder.foo;
+        this.date = builder.date;
     }
 
     public String getFoo() {
         return foo;
+    }
+
+    public Date getDate() {
+        return date;
     }
 }

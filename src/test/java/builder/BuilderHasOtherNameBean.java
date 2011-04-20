@@ -52,7 +52,7 @@ public final class BuilderHasOtherNameBean {
          *
          * @return {@link builder.BuilderHasOtherNameBean} instance.
          */
-        public final BuilderHasOtherNameBean build() {
+        public final BuilderHasOtherNameBean doit() {
             return new BuilderHasOtherNameBean(this);
         }
     }

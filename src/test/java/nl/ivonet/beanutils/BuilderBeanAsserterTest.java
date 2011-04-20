@@ -93,7 +93,8 @@ public class BuilderBeanAsserterTest {
 
     @Test
     public void testBuilderHasOtherNameAndProvided() throws Exception {
-        assertBuildObjectGetterBehavior(BuilderHasOtherNameBean.class, BuilderHasOtherNameBean.Creator.class);
+        assertBuildObjectGetterBehavior(BuilderHasOtherNameBean.class, BuilderHasOtherNameBean.Creator.class, "doit",
+                                               null, null);
     }
 
     @Test(expected = AssertionError.class)

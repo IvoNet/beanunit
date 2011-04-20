@@ -34,7 +34,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 /**
- * Asserts "simple" beans that are constructed using the "Creator" pattern as documented
+ * Asserts "simple" beans that are constructed using the "Builder" pattern as documented
  * by Joshua Bloch ("Effective Java" - Second Edition).
  * <p/>
  * The Beans constructed this way are after construction immutable or at least that is
@@ -70,10 +70,21 @@ public class BuilderBeanAsserter extends Asserter {
                                                               final String buildMethodName,
                                                               final List<String> excludedBuilderMethods,
                                                               final List<String> excludedClassProperties) {
-        final List<String> blacklistBuilderMethods = new ArrayList<String>(excludedBuilderMethods);
+
+        final List<String> blacklistBuilderMethods;
+        if (excludedBuilderMethods != null) {
+            blacklistBuilderMethods = new ArrayList<String>(excludedBuilderMethods);
+        } else {
+            blacklistBuilderMethods = new ArrayList<String>(1);
+        }
         blacklistBuilderMethods.add("class");
 
-        final List<String> blackListClassProperties = new ArrayList<String>(excludedClassProperties);
+        final List<String> blackListClassProperties;
+        if (excludedClassProperties != null) {
+            blackListClassProperties = new ArrayList<String>(excludedClassProperties);
+        } else {
+            blackListClassProperties = new ArrayList<String>(1);
+        }
         blackListClassProperties.add("class");
 
         try {
@@ -139,9 +150,8 @@ public class BuilderBeanAsserter extends Asserter {
      */
     public static <T> void assertBuildObjectGetterBehavior(final Class<T> classUnderTest) {
 
-        final Class<?> builder = findBuilder(classUnderTest);
-        assertBuildObjectGetterBehavior(classUnderTest, builder, BUILD_METHOD_NAME, Collections.<String>emptyList(),
-                                               Collections.<String>emptyList());
+        assertBuildObjectGetterBehavior(classUnderTest, findBuilder(classUnderTest), BUILD_METHOD_NAME,
+                                               Collections.<String>emptyList(), Collections.<String>emptyList());
 
     }
 

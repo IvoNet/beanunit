@@ -85,6 +85,7 @@ public abstract class Asserter {
         TYPE_ARGUMENTS.put(Double.TYPE, DOUBLE);
         TYPE_ARGUMENTS.put(BigDecimal.class, new BigDecimal("3.14159"));
         TYPE_ARGUMENTS.put(java.sql.Date.class, new java.sql.Date(new Date().getTime()));
+        TYPE_ARGUMENTS.put(java.util.Date.class, new java.util.Date(new Date().getTime()));
         TYPE_ARGUMENTS.put(Timestamp.class, new Timestamp(new Date().getTime()));
         TYPE_ARGUMENTS.put(Calendar.class, Calendar.getInstance());
     }
