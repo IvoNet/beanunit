@@ -52,8 +52,6 @@ import static org.junit.Assert.fail;
  */
 @SuppressWarnings({"unchecked"})
 public final class SimplePojoContractAsserter extends Asserter {
-    private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger
-                                                               .getLogger(SimplePojoContractAsserter.class);
 
     private SimplePojoContractAsserter() {
         //All static so don't create
@@ -105,22 +103,14 @@ public final class SimplePojoContractAsserter extends Asserter {
                 assertSame(property + " getter/setter failed test", arg, propertyValue);
             }
         } catch (final IntrospectionException e) {
-            final String msg = "Error creating PropertyDescriptor for property [" + property
-                               + "]. Do you have a getter and a setter?";
-            LOG.error(msg, e);
-            fail(msg);
+            fail("Error creating PropertyDescriptor for property [" + property
+                 + "]. Do you have a getter and a setter?");
         } catch (final IllegalAccessException e) {
-            final String msg = "Error accessing property. Are the getter and setter both accessible?";
-            LOG.error(msg, e);
-            fail(msg);
+            fail("Error accessing property. Are the getter and setter both accessible?");
         } catch (final InvocationTargetException e) {
-            final String msg = "Error invoking method on target";
-            LOG.error(msg, e);
-            fail(msg);
+            fail("Error invoking method on target");
         } catch (InstantiationException e) {
-            final String msg = "Error instantiating target";
-            LOG.error(msg, e);
-            fail(msg);
+            fail("Error instantiating target");
         }
     }
 
