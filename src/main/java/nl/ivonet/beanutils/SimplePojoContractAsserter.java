@@ -58,10 +58,10 @@ public final class SimplePojoContractAsserter extends Asserter {
 
     /**
      * Tests that the getter and setter methods for <code>property</code> work in a basic fashion, which is that the
-     * getter returns the exact same object as set by the setter method. (And we don't care that FindBugz says this is
-     * bad, bad, bad and furthermore we disable that check in FindBugz anyway based on the Reduction of Java
-     * Overengineering Act. Then again, some might argue that <i>this</i> class itself embodies Java Overengineering!)
-     * <p/> Uses a default argument for basic collection types, primitive types, Dates, java.sql.Dates, and Timestamps.
+     * getter returns the exact same object as set by the setter method.
+     * FindBugz says this is not correct but I don't see the bad in it :-)
+     * <p/>
+     * Uses a default argument for basic collection types, primitive types, Dates, java.sql.Dates, and Timestamps.
      * See {@link SimplePojoContractAsserter#TYPE_ARGUMENTS}.
      *
      * @param classUnderTest the object on which to invoke the getter and setter
