@@ -53,6 +53,8 @@ public class BuilderBeanAsserter extends Asserter {
 
     private static final String BUILDER_NAME = "Builder";
     private static final String BUILD_METHOD_NAME = "build";
+    private static final String METHOD_IGNORE_CHARACTER = "$";
+    private static final String ALWAYS_EXCLUDED = "class";
 
     /**
      * Tests a bean created by a builder.
@@ -71,48 +73,12 @@ public class BuilderBeanAsserter extends Asserter {
                                                               final List<String> excludedBuilderMethods,
                                                               final List<String> excludedClassProperties) {
 
-        final List<String> blacklistBuilderMethods;
-        if (excludedBuilderMethods != null) {
-            blacklistBuilderMethods = new ArrayList<String>(excludedBuilderMethods);
-        } else {
-            blacklistBuilderMethods = new ArrayList<String>(1);
-        }
-        blacklistBuilderMethods.add("class");
-
-        final List<String> blackListClassProperties;
-        if (excludedClassProperties != null) {
-            blackListClassProperties = new ArrayList<String>(excludedClassProperties);
-        } else {
-            blackListClassProperties = new ArrayList<String>(1);
-        }
-        blackListClassProperties.add("class");
+        final List<String> blackListClassProperties = convertExclusions(excludedClassProperties);
+        blackListClassProperties.add(ALWAYS_EXCLUDED);
 
         try {
-            final Constructor[] constructors = builderUnderTest.getDeclaredConstructors();
-            if (constructors.length > 1) {
-                fail("There should only be one constructor in a Builder class");
-            }
-            final Method buildMethod = builderUnderTest.getMethod(buildMethodName);
-
             @SuppressWarnings({"unchecked"})
-            final B builder = (B) Asserter.createObject(constructors[0]);
-
-            final Method[] methods = builderUnderTest.getDeclaredMethods();
-            assertFalse("There should be builder methods ", methods.length == 0);
-            boolean hasBuilderMethods = false;
-            for (final Method method : methods) {
-                if (builderUnderTest.getSimpleName().equals(method.getReturnType().getSimpleName())) {
-                    hasBuilderMethods = true;
-                    if (blacklistBuilderMethods.contains(method.getName())) {
-                        continue;
-                    }
-                    method.invoke(builder, createMethodParameterList(method));
-                }
-            }
-            assertTrue("No builder methods found in the builder. Do the builder methods have the Builder as returnType?",
-                              hasBuilderMethods);
-            @SuppressWarnings({"unchecked"})
-            final T objectUnderTest = (T) buildMethod.invoke(builder);
+            final T objectUnderTest = (T) createBean(builderUnderTest, buildMethodName, excludedBuilderMethods);
 
             final BeanInfo beanInfo = Introspector.getBeanInfo(classUnderTest);
             final PropertyDescriptor[] descriptors = beanInfo.getPropertyDescriptors();
@@ -138,6 +104,156 @@ public class BuilderBeanAsserter extends Asserter {
         } catch (IllegalAccessException e) {
             fail(e.getMessage());
         }
+    }
+
+//    private static <B> Object createBean(final Class<B> builderUnderTest)
+//            throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
+//        return createBean(builderUnderTest, "build", null);
+//    }
+
+    private static <B> Object createBean(final Class<B> builderUnderTest, final String buildMethodName,
+                                         final List<String> excludedBuilderMethods)
+            throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        final List<String> blacklistBuilderMethods = convertExclusions(excludedBuilderMethods);
+        blacklistBuilderMethods.add(ALWAYS_EXCLUDED);
+        blacklistBuilderMethods.add(buildMethodName);
+
+        final Constructor[] constructors = builderUnderTest.getDeclaredConstructors();
+        if (constructors.length > 1) {
+            fail("There should only be one constructor in a Builder class");
+        }
+        final Method buildMethod = builderUnderTest.getMethod(buildMethodName);
+
+        @SuppressWarnings({"unchecked"})
+        final B builder = (B) createObject(constructors[0]);
+
+        final Method[] methods = builderUnderTest.getDeclaredMethods();
+        assertFalse("There should be builder methods ", methods.length == 0);
+        boolean hasBuilderMethods = false;
+        for (final Method method : methods) {
+            if (blacklistBuilderMethods.contains(method.getName())) {
+                if (isReturnTypeTheBuilder(builderUnderTest, method)) {
+                    hasBuilderMethods = true;
+                }
+                continue;
+            }
+            if (isReturnTypeTheBuilder(builderUnderTest, method)) {
+                hasBuilderMethods = true;
+                method.invoke(builder, createMethodParameterList(method));
+            } else if (methodToTest(method)) {
+                fail(String.format("The return type of method %s is not the Builder type.", method.getName()));
+            }
+        }
+        assertTrue("No builder methods found in the builder. Do the builder methods have the Builder as returnType?",
+                          hasBuilderMethods);
+        return buildMethod.invoke(builder);
+    }
+
+    private static boolean isReturnTypeTheBuilder(final Class builderUnderTest, final Method method) {
+        return builderUnderTest.getSimpleName().equals(method.getReturnType().getSimpleName());
+    }
+
+    private static boolean methodToTest(final Method method) {
+        return !method.getName().contains(METHOD_IGNORE_CHARACTER);
+    }
+
+    private static List<String> convertExclusions(final List<String> excludedBuilderMethods) {
+        final List<String> blacklistBuilderMethods;
+        if (excludedBuilderMethods != null) {
+            blacklistBuilderMethods = new ArrayList<String>(excludedBuilderMethods);
+        } else {
+            blacklistBuilderMethods = new ArrayList<String>(1);
+        }
+        return blacklistBuilderMethods;
+
+    }
+
+    private static List<String> convertExclusions(final String... excludedBuilderMethods) {
+        return convertExclusions(Arrays.asList(excludedBuilderMethods));
+    }
+
+    /**
+     * Tests all the flows of the overridden equals and hashCode methods of a class.
+     * <p/>
+     * - it ensures that if A == B, B == A also
+     * - it tests the equals and hasCode methods for all the separate writable properties
+     * - it only tests if the equals method and the hashCode method are both overridden
+     * - it fails of only one is overridden
+     * - The both methods need to be overridden at the same level (not java.lang.Object)
+     * <p/>
+     * You can exclude properties by adding them to the method argument list.
+     *
+     * @param classUnderTest     the implementation.class
+     * @param excludedProperties string representation of all the properties excluded from the equals test , e.g. "firstName"
+     * @param <T>                the type of the class to test
+     */
+    public static <T> void assertEqualsHashCode(final Class<T> classUnderTest, final String... excludedProperties) {
+        assertEqualsHashCode(classUnderTest, findBuilder(classUnderTest), BUILD_METHOD_NAME,
+                                    convertExclusions(excludedProperties));
+
+    }
+
+    /**
+     * Tests all the flows of the overridden equals and hashCode methods of a class.
+     * <p/>
+     * - it ensures that if A == B, B == A also
+     * - it tests the equals and hasCode methods for all the separate writable properties
+     * - it only tests if the equals method and the hashCode method are both overridden
+     * - it fails of only one is overridden
+     * - The both methods need to be overridden at the same level (not java.lang.Object)
+     * <p/>
+     * You can exclude properties by adding them to the method argument list.
+     *
+     * @param classUnderTest     the implementation.class
+     * @param builderUnderTest   the Builder class
+     * @param buildMethod        the string name of the build method
+     * @param excludedProperties string representation of all the properties excluded from the equals test , e.g. "firstName"
+     * @param <T>                the type of the class to test
+     */
+    @SuppressWarnings({"unchecked"})
+    public static <T, B> void assertEqualsHashCode(final Class<T> classUnderTest, final Class<B> builderUnderTest,
+                                                   final String buildMethod, final List<String> excludedProperties) {
+        final ArrayList<String> blacklist = new ArrayList<String>(excludedProperties);
+        blacklist.add(ALWAYS_EXCLUDED);
+        try {
+            final T one = (T) createBean(builderUnderTest, buildMethod, excludedProperties);
+            final T two = (T) createBean(builderUnderTest, buildMethod, excludedProperties);
+
+            final Class<?> equalsDeclaringClass = classUnderTest.getMethod("equals", Object.class).getDeclaringClass();
+            final Class<?> hashCodeDeclaringClass = classUnderTest.getMethod("hashCode").getDeclaringClass();
+            if (doesNotOverrideObjectMethod(equalsDeclaringClass)) {
+                fail("If this test is run the equals() method must be overridden by the class under test.");
+            }
+            if (doesNotOverrideObjectMethod(hashCodeDeclaringClass)) {
+                fail("If this test is run the hashCode() method must be overridden by the class under test.");
+            }
+            if (!hashCodeDeclaringClass.getName().equals(equalsDeclaringClass.getName())) {
+                fail(String.format("The equals and hashCode methods of Class<%s> have different declaring classes.",
+                                          classUnderTest));
+            }
+
+            assertTrue("Two instances build the same way are not equal (o1.equals(o2))", one.equals(two));
+            assertTrue("Two instances build the same way do not have the same hashcode",
+                              one.hashCode() == two.hashCode());
+
+            assertTrue("Instances with default constructor not equal (o1.equals(o1))", one.equals(one));
+
+            assertTrue("Instances with default constructor not equal (o2.equals(o1))", two.equals(one));
+            assertFalse("Equaling different types of object should not be equal", one.equals(new OtherType()));
+            //noinspection ObjectEqualsNull
+            assertFalse("Equaling null type should not be equal", one.equals(null));
+
+        } catch (IllegalAccessException e) {
+            fail("IllegalAccessException.");
+        } catch (NoSuchMethodException e) {
+            fail("There is no equals or hashCode method ");
+        } catch (InvocationTargetException e) {
+            fail("Could not invoke");
+        }
+    }
+
+    private static boolean doesNotOverrideObjectMethod(final Class<?> clazz) {
+        return clazz.getName().equals(JAVA_LANG_OBJECT);
     }
 
     /**
@@ -234,5 +350,8 @@ public class BuilderBeanAsserter extends Asserter {
         }
         fail("No Build class found.");
         return null;
+    }
+
+    private static class OtherType {
     }
 }

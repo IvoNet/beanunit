@@ -72,4 +72,5 @@ public final class BuilderWithMultipleConstructorBean {
     public List<String> getList() {
         return Collections.unmodifiableList(list);
     }
+
 }

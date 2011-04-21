@@ -29,9 +29,6 @@ public final class AddressDto {
     private final String id;
     private final String streetAddition;
 
-    /**
-     * @return the id
-     */
     public String getId() {
         return this.id;
     }
@@ -46,44 +43,26 @@ public final class AddressDto {
         this.streetAddition = b.streetAddition;
     }
 
-    /**
-     * @return the name of the city
-     */
     public String getCity() {
         return this.city;
     }
 
-    /**
-     * @return the street
-     */
     public String getStreet() {
         return this.street;
     }
 
-    /**
-     * @return the street addition
-     */
     public String getStreetAddition() {
         return this.streetAddition;
     }
 
-    /**
-     * @return the street number
-     */
     public String getStreetNumber() {
         return this.streetNumber;
     }
 
-    /**
-     * @return the zipcode
-     */
     public String getZipCode() {
         return this.zipCode;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean equals(final Object obj) {
         if (obj == null) {
@@ -107,9 +86,6 @@ public final class AddressDto {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int hashCode() {
         final int prime = 17;
@@ -151,65 +127,43 @@ public final class AddressDto {
         private String zipCode;
         private String id;
 
-        /**
-         * @param city the city to set
-         */
         public Builder setCity(final String city) {
             this.city = city;
             return this;
         }
 
-        /**
-         * @param street the street to set
-         */
         public Builder setStreet(final String street) {
             this.street = street;
             return this;
         }
 
-        /**
-         * @param streetAddition the streetAddition to set
-         */
         public Builder setStreetAddition(final String streetAddition) {
             this.streetAddition = streetAddition;
             return this;
         }
 
-        /**
-         * @param streetNumber the streetNumber to set
-         */
         public Builder setStreetNumber(final String streetNumber) {
             this.streetNumber = streetNumber;
             return this;
         }
 
-        /**
-         * @param zipCode the zipCode to set
-         */
         public Builder setZipCode(final String zipCode) {
             this.zipCode = zipCode;
             return this;
         }
 
-        /**
-         * @return {@link AddressDto}
-         */
+        public Builder setId(final String id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder setStreetNumberAddition(final String streetNumberAddition) {
+            this.streetNumberAddition = streetNumberAddition;
+            return this;
+        }
+
         public AddressDto build() {
             return new AddressDto(this);
-        }
-
-        /**
-         * @param id the id
-         */
-        public void setId(final String id) {
-            this.id = id;
-        }
-
-        /**
-         * @param streetNumberAddition the addition of the number
-         */
-        public void setStreetNumberAddition(final String streetNumberAddition) {
-            this.streetNumberAddition = streetNumberAddition;
         }
     }
 

@@ -22,14 +22,18 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Test;
 
+import builder.AddressDto;
 import builder.BuilderHasOtherNameBean;
+import builder.BuilderMethodIsWrong;
 import builder.BuilderWithConstructorBean;
 import builder.BuilderWithMultipleConstructorBean;
+import builder.EqualsMethodButNoHasCode;
 import builder.NotImmutableBuilderBean;
 import builder.SimpleBuilderBean;
 import simplepojo.SimpleBean;
 
 import static nl.ivonet.beanutils.BuilderBeanAsserter.assertBuildObjectGetterBehavior;
+import static nl.ivonet.beanutils.BuilderBeanAsserter.assertEqualsHashCode;
 
 /**
  * Unit tests for the {@link nl.ivonet.beanutils.BuilderBeanAsserter} class.
@@ -77,6 +81,11 @@ public class BuilderBeanAsserterTest {
     }
 
     @Test
+    public void testSimpleBuilderOtherConvenienceMethod() throws Exception {
+        assertBuildObjectGetterBehavior(SimpleBuilderBean.class, SimpleBuilderBean.Builder.class);
+    }
+
+    @Test
     public void testSimpleBuilderDefaultBuilder() throws Exception {
         assertBuildObjectGetterBehavior(SimpleBuilderBean.class);
     }
@@ -100,5 +109,21 @@ public class BuilderBeanAsserterTest {
     @Test(expected = AssertionError.class)
     public void testMultipleConstructorsBuilder() throws Exception {
         assertBuildObjectGetterBehavior(BuilderWithMultipleConstructorBean.class);
+    }
+
+    @Test
+    public void testEqualsHashcode() throws Exception {
+        assertBuildObjectGetterBehavior(AddressDto.class);
+        assertEqualsHashCode(AddressDto.class);
+    }
+
+    @Test(expected = AssertionError.class)
+    public void testWrongBuilderMethod() throws Exception {
+        assertBuildObjectGetterBehavior(BuilderMethodIsWrong.class);
+    }
+
+    @Test(expected = AssertionError.class)
+    public void testEqualsNoHashCode() throws Exception {
+        assertEqualsHashCode(EqualsMethodButNoHasCode.class);
     }
 }
