@@ -116,7 +116,7 @@ public final class SimplePojoContractAsserter extends Asserter {
     /**
      * @param classUnderTest the object on which to invoke the getter and setter
      * @param properties     map of property names to argument values
-     * @see {@link #assertBasicGetterSetterBehavior(Class, String, Object)} method. Only difference is that here we accept a map
+     * @see {@link SimplePojoContractAsserter#assertBasicGetterSetterBehavior(Class, String, Object)} method. Only difference is that here we accept a map
      *      containing property name/value pairs. Use this to test a bunch of property accessors at once. Note that the
      *      values in the map can be null, and in that case we'll try to supply a default argument.
      */
@@ -130,7 +130,7 @@ public final class SimplePojoContractAsserter extends Asserter {
 
     /**
      * @param classUnderTest the object on which to invoke the getter and setter
-     * @see {@link #assertBasicGetterSetterBehavior(Class, String, Object)} method. No items are blacklisted.
+     * @see {@link SimplePojoContractAsserter#assertBasicGetterSetterBehavior(Class, String, Object)} method. No items are blacklisted.
      */
     public static <T> void assertBasicGetterSetterBehavior(final Class<T> classUnderTest) {
         assertBasicGetterSetterBehaviorWithBlacklist(classUnderTest);
@@ -139,7 +139,7 @@ public final class SimplePojoContractAsserter extends Asserter {
     /**
      * @param classUnderTest the object on which to invoke the getter and setter
      * @param propertyNames  the list of property names that should not be tested
-     * @see {@link #assertBasicGetterSetterBehavior(Class, String, Object)} method. Big difference here is that we try to
+     * @see {@link SimplePojoContractAsserter#assertBasicGetterSetterBehavior(Class, String, Object)} method. Big difference here is that we try to
      *      automatically introspect the target object, finding read/write properties, and automatically testing the getter
      *      and setter. Note specifically that read-only properties are ignored, as there is no way for us to know how to set
      *      the value (since there isn't a public setter).

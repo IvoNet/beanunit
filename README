@@ -95,7 +95,3 @@ The tests done on the beans are described below...
 * automatically test equals / hashcode if they are overridden in the class under
   test (is a separate test now)
 * test equals / hashcode on Constructor constructed immutable beans.
-* cleanup code more
-* I'm not a great fan of static code (smells of procedural programming) and I
-  want to look into that. It might be ok for unit testing.
-  If you have an opinion contact me on twitter
