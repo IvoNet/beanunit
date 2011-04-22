@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package nl.ivonet.beanutils;
+package nl.ivonet.beanunit;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
@@ -41,7 +41,7 @@ import static org.junit.Assert.fail;
 
 /**
  * Parent class for all Asserters.
- * This class implements all the plumbing code to make the work of the other {@link nl.ivonet.beanutils.Asserter}s
+ * This class implements all the plumbing code to make the work of the other {@link nl.ivonet.beanunit.Asserter}s
  * easier.
  * <p/>
  * One can (de)register basic type arguments

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package nl.ivonet.beanutils;
+package nl.ivonet.beanunit;
 
 import java.sql.Date;
 import java.util.HashMap;
@@ -29,12 +29,12 @@ import simplepojo.SimpleBean;
 import simplepojo.WrongSinpleBean;
 import simplepojo.ZipCode;
 
-import static nl.ivonet.beanutils.SimplePojoContractAsserter.assertBasicGetterSetterBehavior;
-import static nl.ivonet.beanutils.SimplePojoContractAsserter.assertBasicGetterSetterBehaviorWithBlacklist;
-import static nl.ivonet.beanutils.SimplePojoContractAsserter.assertEqualsHashCode;
+import static nl.ivonet.beanunit.SimplePojoContractAsserter.assertBasicGetterSetterBehavior;
+import static nl.ivonet.beanunit.SimplePojoContractAsserter.assertBasicGetterSetterBehaviorWithBlacklist;
+import static nl.ivonet.beanunit.SimplePojoContractAsserter.assertEqualsHashCode;
 
 /**
- * Unit tests for the {@link nl.ivonet.beanutils.SimplePojoContractAsserter} class
+ * Unit tests for the {@link nl.ivonet.beanunit.SimplePojoContractAsserter} class
  *
  * @author Ivo Woltring
  */

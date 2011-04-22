@@ -38,7 +38,8 @@ limitations under the License.
 ===============================================================================
 = GOAL
 ===============================================================================
-The goal of this jar is to perform useful unit tests on beans of different kinds.
+The goal of this jar is to perform automated useful unit tests on "simple" beans
+of different kinds.
 * methods that makes easy work of testing default behavior pojos (beans).
 * methods for testing beans that are immutable after construction.
 * Asserts "simple" beans that are constructed using the "Builder" pattern as
@@ -79,7 +80,8 @@ The tests done on the beans are described below...
 ===============================================================================
 * Default constructor
 * Bean specification (Getters and Setters for all properties)
-* if equal method overridden / hashCode method must also be overridden
+* if equal method overridden / hashCode method must also be overridden in the
+  same class
 * if objects are equal the hashCode must also be equal
 
 ===============================================================================
@@ -90,7 +92,7 @@ The tests done on the beans are described below...
 * Can override equals / hashcode
 
 ===============================================================================
-= TODO
+= Wishlist
 ===============================================================================
 * automatically test equals / hashCode if they are overridden in the class under
   test (is a separate test now)

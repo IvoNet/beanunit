@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package nl.ivonet.beanutils;
+package nl.ivonet.beanunit;
 
 import java.math.BigDecimal;
 
@@ -28,9 +28,9 @@ import immutable.Employee;
 import immutable.InventoryDto;
 import immutable.NotImmutableBuildingDto;
 
-import static nl.ivonet.beanutils.Asserter.registerTypeAndDefaultArgument;
-import static nl.ivonet.beanutils.ConstructorImmutableBeanAsserter.assertEqualsHashCode;
-import static nl.ivonet.beanutils.ConstructorImmutableBeanAsserter.assertGettersOnConstructorImmutableObject;
+import static nl.ivonet.beanunit.Asserter.registerTypeAndDefaultArgument;
+import static nl.ivonet.beanunit.ConstructorImmutableBeanAsserter.assertEqualsHashCode;
+import static nl.ivonet.beanunit.ConstructorImmutableBeanAsserter.assertGettersOnConstructorImmutableObject;
 
 /**
  * Unit tests for the {@link SimplePojoContractAsserter} class.

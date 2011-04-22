@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package nl.ivonet.beanutils;
+package nl.ivonet.beanunit;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package nl.ivonet.beanutils;
+package nl.ivonet.beanunit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,11 +32,11 @@ import builder.NotImmutableBuilderBean;
 import builder.SimpleBuilderBean;
 import simplepojo.SimpleBean;
 
-import static nl.ivonet.beanutils.BuilderBeanAsserter.assertBuildObjectGetterBehavior;
-import static nl.ivonet.beanutils.BuilderBeanAsserter.assertEqualsHashCode;
+import static nl.ivonet.beanunit.BuilderBeanAsserter.assertBuildObjectGetterBehavior;
+import static nl.ivonet.beanunit.BuilderBeanAsserter.assertEqualsHashCode;
 
 /**
- * Unit tests for the {@link nl.ivonet.beanutils.BuilderBeanAsserter} class.
+ * Unit tests for the {@link nl.ivonet.beanunit.BuilderBeanAsserter} class.
  *
  * @author Ivo Woltring
  */
