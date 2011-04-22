@@ -94,5 +94,4 @@ The tests done on the beans are described below...
 ===============================================================================
 * automatically test equals / hashcode if they are overridden in the class under
   test (is a separate test now)
-* test equals / hashcode on Constructor constructed immutable beans.
 * Try to get this project into maven central (don't know how yet)

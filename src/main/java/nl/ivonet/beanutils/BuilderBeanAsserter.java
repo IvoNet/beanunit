@@ -225,7 +225,7 @@ public class BuilderBeanAsserter extends Asserter {
                 fail("If this test is run the equals() method must be overridden by the class under test.");
             }
             if (doesNotOverrideObjectMethod(hashCodeDeclaringClass)) {
-                fail("If this test is run the hashCode() method must be overridden by the class under test.");
+                fail("If equals() method is overridden the hashCode() method must also be overridden by the class under test.");
             }
             if (!hashCodeDeclaringClass.getName().equals(equalsDeclaringClass.getName())) {
                 fail(String.format("The equals and hashCode methods of Class<%s> have different declaring classes.",

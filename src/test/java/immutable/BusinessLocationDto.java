@@ -65,4 +65,20 @@ public final class BusinessLocationDto {
     public boolean isStagnation() {
         return this.stagnation;
     }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) { return true; }
+        if (!(o instanceof BusinessLocationDto)) { return false; }
+
+        final BusinessLocationDto that = (BusinessLocationDto) o;
+
+        if (inventory != that.inventory) { return false; }
+        if (stagnation != that.stagnation) { return false; }
+        if (stock != that.stock) { return false; }
+        if (address != null ? !address.equals(that.address) : that.address != null) { return false; }
+
+        return true;
+    }
+
 }

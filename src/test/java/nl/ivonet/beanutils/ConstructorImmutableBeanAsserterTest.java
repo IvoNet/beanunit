@@ -16,14 +16,21 @@
 
 package nl.ivonet.beanutils;
 
+import java.math.BigDecimal;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import builder.AddressDto;
 import immutable.BusinessLocationDto;
+import immutable.Employee;
 import immutable.InventoryDto;
 import immutable.NotImmutableBuildingDto;
+
+import static nl.ivonet.beanutils.Asserter.registerTypeAndDefaultArgument;
+import static nl.ivonet.beanutils.ConstructorImmutableBeanAsserter.assertEqualsHashCode;
+import static nl.ivonet.beanutils.ConstructorImmutableBeanAsserter.assertGettersOnConstructorImmutableObject;
 
 /**
  * Unit tests for the {@link SimplePojoContractAsserter} class.
@@ -33,8 +40,8 @@ import immutable.NotImmutableBuildingDto;
 public class ConstructorImmutableBeanAsserterTest {
     @Before
     public void setUp() throws Exception {
-        SimplePojoContractAsserter
-                .registerTypeAndDefaultArgument(AddressDto.class, new AddressDto.Builder().setCity("c").build());
+        registerTypeAndDefaultArgument(AddressDto.class, new AddressDto.Builder().setCity("c").build());
+        registerTypeAndDefaultArgument(BigDecimal.class, new BigDecimal(42));
 
     }
 
@@ -45,21 +52,38 @@ public class ConstructorImmutableBeanAsserterTest {
 
     @Test(expected = AssertionError.class)
     public void testImmutableObjectThatIsNotImmutable() {
-        ConstructorImmutableBeanAsserter.assertGettersOnConstructorImmutableObject(NotImmutableBuildingDto.class);
+        assertGettersOnConstructorImmutableObject(NotImmutableBuildingDto.class);
     }
 
     @Test
     public void testImmutableDto() throws Exception {
-        ConstructorImmutableBeanAsserter.assertGettersOnConstructorImmutableObject(BusinessLocationDto.class);
+        assertGettersOnConstructorImmutableObject(BusinessLocationDto.class);
     }
 
     @Test
     public void testExcludePropertiesFromTest() throws Exception {
-        ConstructorImmutableBeanAsserter.assertGettersOnConstructorImmutableObject(InventoryDto.class, "insuredAmount");
+        assertGettersOnConstructorImmutableObject(InventoryDto.class, "insuredAmount");
     }
 
     @Test
     public void testExcludePropertiesFromTestNoExclusions() throws Exception {
-        ConstructorImmutableBeanAsserter.assertGettersOnConstructorImmutableObject(InventoryDto.class, "insuredAmount");
+        assertGettersOnConstructorImmutableObject(InventoryDto.class, "insuredAmount");
     }
+
+    @Test
+    public void testEqualsHashCode() throws Exception {
+        assertGettersOnConstructorImmutableObject(InventoryDto.class);
+        assertEqualsHashCode(InventoryDto.class);
+    }
+
+    @Test(expected = AssertionError.class)
+    public void testNoHashCode() throws Exception {
+        assertEqualsHashCode(BusinessLocationDto.class);
+    }
+
+    @Test(expected = AssertionError.class)
+    public void testNotOverriddenInSameClassEqualsHashCode() throws Exception {
+        assertEqualsHashCode(Employee.class);
+    }
+
 }
