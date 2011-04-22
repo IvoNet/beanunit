@@ -114,15 +114,13 @@ public class ConstructorImmutableBeanAsserter extends Asserter {
      * @param classUnderTest the implementation.class
      * @param <T>            the type of the class to test
      */
-    @SuppressWarnings({"unchecked"})
     public static <T> void assertEqualsHashCode(final Class<T> classUnderTest) {
         try {
 
             final Constructor[] constructors = classUnderTest.getDeclaredConstructors();
             for (final Constructor constructor : constructors) {
-
-                final T one = (T) createObject(constructor);
-                final T two = (T) createObject(constructor);
+                @SuppressWarnings({"unchecked"}) final T one = (T) createObject(constructor);
+                @SuppressWarnings({"unchecked"}) final T two = (T) createObject(constructor);
 
                 final Class<?> equalsDeclaringClass = classUnderTest.getMethod("equals", Object.class)
                                                               .getDeclaringClass();
@@ -151,7 +149,7 @@ public class ConstructorImmutableBeanAsserter extends Asserter {
             }
 
         } catch (NoSuchMethodException e) {
-            fail("There is no equals or hashCode method ");
+            fail("There is no equals or hashCode method. which is weird :-)");
         }
     }
 

@@ -45,7 +45,7 @@ import static org.junit.Assert.fail;
  * The following assumptions are asserted:
  * All properties that can be set on the builder should be reflected by the read method on the class to be build.
  * All Builders should have a build() method (convention)
- * By preference one should call the Builder class "Builder"
+ * By preference one should call the Builder class "Builder" but this is not mandatory.
  *
  * @author Ivo Woltring
  */
@@ -54,7 +54,6 @@ public class BuilderBeanAsserter extends Asserter {
     private static final String BUILDER_NAME = "Builder";
     private static final String BUILD_METHOD_NAME = "build";
     private static final String METHOD_IGNORE_CHARACTER = "$";
-    private static final String ALWAYS_EXCLUDED = "class";
 
     /**
      * Tests a bean created by a builder.
@@ -179,7 +178,7 @@ public class BuilderBeanAsserter extends Asserter {
      * - it tests the equals and hasCode methods for all the separate writable properties
      * - it only tests if the equals method and the hashCode method are both overridden
      * - it fails of only one is overridden
-     * - The both methods need to be overridden at the same level (not java.lang.Object)
+     * - both methods need to be overridden at the same level (not java.lang.Object)
      * <p/>
      * You can exclude properties by adding them to the method argument list.
      *
@@ -210,14 +209,15 @@ public class BuilderBeanAsserter extends Asserter {
      * @param excludedProperties string representation of all the properties excluded from the equals test , e.g. "firstName"
      * @param <T>                the type of the class to test
      */
-    @SuppressWarnings({"unchecked"})
     public static <T, B> void assertEqualsHashCode(final Class<T> classUnderTest, final Class<B> builderUnderTest,
                                                    final String buildMethod, final List<String> excludedProperties) {
         final ArrayList<String> blacklist = new ArrayList<String>(excludedProperties);
         blacklist.add(ALWAYS_EXCLUDED);
         try {
-            final T one = (T) createBean(builderUnderTest, buildMethod, excludedProperties);
-            final T two = (T) createBean(builderUnderTest, buildMethod, excludedProperties);
+            @SuppressWarnings({"unchecked"}) final T one = (T) createBean(builderUnderTest, buildMethod,
+                                                                                 excludedProperties);
+            @SuppressWarnings({"unchecked"}) final T two = (T) createBean(builderUnderTest, buildMethod,
+                                                                                 excludedProperties);
 
             final Class<?> equalsDeclaringClass = classUnderTest.getMethod("equals", Object.class).getDeclaringClass();
             final Class<?> hashCodeDeclaringClass = classUnderTest.getMethod("hashCode").getDeclaringClass();
@@ -244,11 +244,11 @@ public class BuilderBeanAsserter extends Asserter {
             assertFalse("Equaling null type should not be equal", one.equals(null));
 
         } catch (IllegalAccessException e) {
-            fail("IllegalAccessException.");
+            fail(e.getMessage());
         } catch (NoSuchMethodException e) {
-            fail("There is no equals or hashCode method ");
+            fail(e.getMessage());
         } catch (InvocationTargetException e) {
-            fail("Could not invoke");
+            fail(e.getMessage());
         }
     }
 
@@ -348,7 +348,7 @@ public class BuilderBeanAsserter extends Asserter {
                 return declaredClass;
             }
         }
-        fail("No Build class found.");
+        fail(String.format("No Builder class found for class under test [%s].", classUnderTest.getSimpleName()));
         return null;
     }
 

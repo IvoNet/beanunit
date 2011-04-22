@@ -57,6 +57,7 @@ public abstract class Asserter {
     private static final long LONG = 42L;
     static final int TEST_ARRAY_SIZE = 42;
     static final String JAVA_LANG_OBJECT = "java.lang.Object";
+    static final String ALWAYS_EXCLUDED = "class";
     static final Map<Class, Object> TYPE_ARGUMENTS = new HashMap<Class, Object>();
 
     static {
@@ -118,14 +119,21 @@ public abstract class Asserter {
     }
 
     //Tries to invoke the default constructor even if this constructor is private.
-    private static Object invokeDefaultConstructorEvenIfPrivate(final Class type) {
+    private static Object invokeDefaultConstructorEvenIfPrivate(final Class<?> type) {
         try {
-            final Constructor ctor = type.getDeclaredConstructor();
-            ctor.setAccessible(true);
-            return ctor.newInstance();
-        } catch (final Exception ex) {
-            throw new RuntimeException("Could not invoke default constructor on type " + type, ex);
+            final Constructor<?> constructor = type.getDeclaredConstructor();
+            constructor.setAccessible(true);
+            return constructor.newInstance();
+        } catch (InstantiationException e) {
+            fail(e.getMessage());
+        } catch (IllegalAccessException e) {
+            fail(e.getMessage());
+        } catch (InvocationTargetException e) {
+            fail(e.getMessage());
+        } catch (NoSuchMethodException e) {
+            fail(e.getMessage());
         }
+        return null;
     }
 
     /**
@@ -135,7 +143,7 @@ public abstract class Asserter {
      * @param type            the type to register
      * @param defaultArgument the default argument to use in setters
      */
-    public static void registerTypeAndDefaultArgument(final Class type, final Object defaultArgument) {
+    public static void registerTypeAndDefaultArgument(final Class<?> type, final Object defaultArgument) {
         TYPE_ARGUMENTS.put(type, defaultArgument);
     }
 
@@ -144,7 +152,7 @@ public abstract class Asserter {
      *
      * @param type the type to deregister.
      */
-    public static void deregisterType(final Class type) {
+    public static void deregisterType(final Class<?> type) {
         TYPE_ARGUMENTS.remove(type);
     }
 
@@ -157,16 +165,6 @@ public abstract class Asserter {
     }
 
     /**
-     * Returns the default argument for the specified type.
-     *
-     * @param type the type
-     * @return the type's default argument
-     */
-    public static Object defaultArgumentForType(final Class type) {
-        return TYPE_ARGUMENTS.get(type);
-    }
-
-    /**
      * Creates the list of parameters based on default values for a provided constructor.
      *
      * @param constructor the constructor to create the parameter list for
@@ -174,8 +172,8 @@ public abstract class Asserter {
      */
     static Object[] createConstructorParameterList(final Constructor<?> constructor) {
         final List arguments = new ArrayList();
-        final Class[] parameterTypes = constructor.getParameterTypes();
-        for (final Class parameterType : parameterTypes) {
+        final Class<?>[] parameterTypes = constructor.getParameterTypes();
+        for (final Class<?> parameterType : parameterTypes) {
             //noinspection unchecked
             arguments.add(retrieveDefaultValueByType(parameterType));
         }
@@ -189,18 +187,15 @@ public abstract class Asserter {
      * @return object array containing the default values for the parameters
      */
     static Object[] createMethodParameterList(final Method method) {
-        final List arguments = new ArrayList();
+        final List<Object> arguments = new ArrayList<Object>();
         final Class<?>[] parameterTypes = method.getParameterTypes();
-        for (final Class parameterType : parameterTypes) {
-            //noinspection unchecked
+        for (final Class<?> parameterType : parameterTypes) {
             arguments.add(retrieveDefaultValueByType(parameterType));
         }
         return arguments.toArray();
     }
 
     static Object createObject(final Constructor<?> constructor, final Object[] arguments) {
-        //TODO Generify this construction method
-
         try {
             return constructor.newInstance(arguments);
         } catch (InstantiationException e) {
@@ -212,7 +207,7 @@ public abstract class Asserter {
         } catch (InvocationTargetException e) {
             fail(e.getMessage());
         }
-        fail("No object created");
+        fail("No object created.");
         return null;
     }
 
@@ -223,7 +218,6 @@ public abstract class Asserter {
      * @return object belonging to the constructor.
      */
     static Object createObject(final Constructor<?> constructor) {
-        //TODO Generify this construction method
         return createObject(constructor, createConstructorParameterList(constructor));
     }
 

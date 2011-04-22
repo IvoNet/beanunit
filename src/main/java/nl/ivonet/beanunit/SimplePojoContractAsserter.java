@@ -49,7 +49,6 @@ import static org.junit.Assert.fail;
  *
  * @author Ivo Woltring
  */
-@SuppressWarnings({"unchecked"})
 public final class SimplePojoContractAsserter extends Asserter {
 
     private SimplePojoContractAsserter() {
@@ -182,8 +181,8 @@ public final class SimplePojoContractAsserter extends Asserter {
      * @param <T>                the type of the class to test
      */
     public static <T> void assertEqualsHashCode(final Class<T> classUnderTest, final String... excludedProperties) {
-        final List<String> blacklist = new ArrayList(Arrays.asList(excludedProperties));
-        blacklist.add("class");
+        final List<String> blacklist = new ArrayList<String>(Arrays.asList(excludedProperties));
+        blacklist.add(ALWAYS_EXCLUDED);
         try {
             final T one = classUnderTest.newInstance();
             final T two = classUnderTest.newInstance();
@@ -257,19 +256,17 @@ public final class SimplePojoContractAsserter extends Asserter {
                                + "() set to null and second instance having it set to null have different hashCode",
                                       one.hashCode() == two.hashCode());
                 }
-
             }
-
         } catch (InstantiationException e) {
-            fail("Could not instantiate the class. Maybe no default constructor.");
+            fail(e.getMessage());
         } catch (IllegalAccessException e) {
-            fail("IllegalAccessException.");
+            fail(e.getMessage());
         } catch (IntrospectionException e) {
-            fail("IntrospectionException");
+            fail(e.getMessage());
         } catch (NoSuchMethodException e) {
-            fail("There is no equals or hashCode method ");
+            fail(e.getMessage());
         } catch (InvocationTargetException e) {
-            fail("Could not invoke");
+            fail(e.getMessage());
         }
     }
 
