@@ -8,7 +8,7 @@
     <style type="text/css">
         body {
             margin-top: 1.0em;
-            background-color: #2cf255;
+            background-color: #000000;
             font-family: Helvetica, Arial, FreeSans, san-serif;
             color: #ffffff;
         }
@@ -20,7 +20,7 @@
 
         h1 {
             font-size: 3.8em;
-            color: #d30daa;
+            color: #00ff00;
             margin-bottom: 3px;
         }
 
@@ -34,16 +34,16 @@
 
         h2 {
             font-size: 1.5em;
-            color: #d30daa;
+            color: #00ff00;
         }
 
         h3 {
             text-align: center;
-            color: #d30daa;
+            color: #00ff00;
         }
 
         a {
-            color: #d30daa;
+            color: #00ff00;
         }
 
         .description {
@@ -75,6 +75,8 @@
             font-style: italic;
         }
     </style>
+    <script src="http://widgets.twimg.com/j/2/widget.js"></script>
+
 </head>
 
 <body>
@@ -149,6 +151,44 @@
     <p>E-mail: <a href="http://www.ivonet.nl/home/contact">here</a>
         <br/>Twitter: @ivonet
         <br/></p>
+
+    <h2>Twitter</h2>
+
+    <p>
+        <script>
+            new TWTR.Widget({
+                version: 2,
+                type: 'search',
+                search: '#beanunit',
+                interval: 4000,
+                title: 'Filter',
+                subject: '#beanunit',
+                width: 300,
+                height: 300,
+                theme: {
+                    shell: {
+                        background: '#333333',
+                        color: '#ffffff'
+                    },
+                    tweets: {
+                        background: '#000000',
+                        color: '#ffffff',
+                        links: '#00ff00'
+                    }
+                },
+                features: {
+                    scrollbar: false,
+                    loop: true,
+                    live: true,
+                    hashtags: true,
+                    timestamp: true,
+                    avatars: true,
+                    toptweets: true,
+                    behavior: 'default'
+                }
+            }).render().start();
+        </script>
+    </p>
 
     <h2>Download</h2>
 
