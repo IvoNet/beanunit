@@ -352,6 +352,86 @@ public class BuilderBeanAsserter extends Asserter {
         return null;
     }
 
+    /**
+     * Performs all the tests defined in this class on a Builder bean.
+     * <p/>
+     * In most situations this is the method to use.
+     *
+     * @param classUnderTest       the class to test
+     * @param exclusionMethodNames the properties to ignore on the builder under test.
+     * @param <T>                  the type of the classUnderTest
+     */
+    public static <T> void assertBean(final Class<T> classUnderTest, final String... exclusionMethodNames) {
+        assertBuildObjectGetterBehavior(classUnderTest, exclusionMethodNames);
+        try {
+            final Class<?> declaringClass = retrieveEqualsMethodDeclaringClass(classUnderTest);
+            if (classUnderTest.getSimpleName().equals(declaringClass.getSimpleName())) {
+                assertEqualsHashCode(classUnderTest, exclusionMethodNames);
+            }
+        } catch (NoSuchMethodException e) {
+            fail("Should never be possible unless the equals class has been removed from Object");
+        }
+    }
+
+    /**
+     * Performs all the tests defined in this class on a Builder bean.
+     * <p/>
+     * In most situations this is the method to use.
+     *
+     * @param classUnderTest      the class to test
+     * @param builderUnderTest    the builder that creates the classUnderTest
+     * @param exclusionProperties the properties to ignore on the class under test.
+     * @param <T>                 the type of the classUnderTest
+     * @param <B>                 the type of the builder
+     */
+    public static <T, B> void assertBean(final Class<T> classUnderTest, final Class<B> builderUnderTest,
+                                         final String... exclusionProperties) {
+        assertBuildObjectGetterBehavior(classUnderTest, builderUnderTest, exclusionProperties);
+        try {
+            final Class<?> declaringClass = retrieveEqualsMethodDeclaringClass(classUnderTest);
+            if (classUnderTest.getSimpleName().equals(declaringClass.getSimpleName())) {
+                assertEqualsHashCode(classUnderTest, builderUnderTest, BUILD_METHOD_NAME,
+                                            convertExclusions(exclusionProperties));
+            }
+        } catch (NoSuchMethodException e) {
+            fail("Should never be possible unless the equals class has been removed from Object");
+        }
+    }
+
+    /**
+     * Performs all the tests defined in this class on a Builder bean.
+     * <p/>
+     * In most situations this is the method to use.
+     *
+     * @param classUnderTest          the class to test
+     * @param builderUnderTest        the builder that creates the classUnderTest
+     * @param buildMethodName         the name of the method that builds the classUnderTest
+     * @param excludedBuilderMethods  properties to exclude from the test in the builder
+     * @param excludedClassProperties properties to exclude from the test in de class under test
+     * @param <T>                     the type of the classUnderTest
+     * @param <B>                     the type of the builder
+     */
+    public static <T, B> void assertBean(final Class<T> classUnderTest, final Class<B> builderUnderTest,
+                                         final String buildMethodName, final List<String> excludedBuilderMethods,
+                                         final List<String> excludedClassProperties) {
+        assertBuildObjectGetterBehavior(classUnderTest, builderUnderTest, buildMethodName, excludedBuilderMethods,
+                                               excludedClassProperties);
+        try {
+            final Class<?> declaringClass = retrieveEqualsMethodDeclaringClass(classUnderTest);
+            if (classUnderTest.getSimpleName().equals(declaringClass.getSimpleName())) {
+                assertEqualsHashCode(classUnderTest, builderUnderTest, buildMethodName,
+                                            convertExclusions(excludedBuilderMethods));
+            }
+        } catch (NoSuchMethodException e) {
+            fail("Should never be possible unless the equals class has been removed from Object");
+        }
+    }
+
+    private static Class<?> retrieveEqualsMethodDeclaringClass(final Class<?> classUnderTest)
+            throws NoSuchMethodException {
+        return classUnderTest.getMethod("equals", Object.class).getDeclaringClass();
+    }
+
     private static class OtherType {
     }
 }

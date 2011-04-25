@@ -32,6 +32,7 @@ import builder.NotImmutableBuilderBean;
 import builder.SimpleBuilderBean;
 import simplepojo.SimpleBean;
 
+import static nl.ivonet.beanunit.BuilderBeanAsserter.assertBean;
 import static nl.ivonet.beanunit.BuilderBeanAsserter.assertBuildObjectGetterBehavior;
 import static nl.ivonet.beanunit.BuilderBeanAsserter.assertEqualsHashCode;
 
@@ -125,5 +126,25 @@ public class BuilderBeanAsserterTest {
     @Test(expected = AssertionError.class)
     public void testEqualsNoHashCode() throws Exception {
         assertEqualsHashCode(EqualsMethodButNoHasCode.class);
+    }
+
+    @Test
+    public void testAssertBean() throws Exception {
+        assertBean(AddressDto.class);
+    }
+
+    @Test
+    public void testAssertBean2() throws Exception {
+        assertBean(BuilderHasOtherNameBean.class, BuilderHasOtherNameBean.Creator.class, "doit", null, null);
+    }
+
+    @Test
+    public void testAssertBean3() throws Exception {
+        assertBean(SimpleBuilderBean.class, SimpleBuilderBean.Builder.class);
+    }
+
+    @Test
+    public void testAssertBean4() throws Exception {
+        assertBean(BuilderWithConstructorBean.class, BuilderWithConstructorBean.Builder.class, "list");
     }
 }
