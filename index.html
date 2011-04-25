@@ -9,7 +9,7 @@
         body {
             margin-top: 1.0em;
             background-color: #000000;
-            font-family: Helvetica, Arial, FreeSans, san-serif;
+            font-family: Helvetica, Arial, FreeSans, san-serif, serif;
             color: #ffffff;
         }
 
@@ -110,7 +110,7 @@
 
     <h2>Install</h2>
 
-    <p><pre>
+    <pre>
     &lt;dependencies>
         ...
         &lt;dependency>
@@ -122,11 +122,10 @@
         ...
     &lt;/dependencies>
     </pre>
-    </p>
 
     <h2>License</h2>
 
-    <p>
+
     <pre>
     Copyright 2011 Ivo Woltring
 
@@ -140,8 +139,9 @@
     distributed under the License is distributed on an "AS IS" BASIS,
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
-    limitations under the License.</pre>
-    </p>
+    limitations under the License.
+    </pre>
+
     <h2>Authors</h2>
 
     <p>Ivo Woltring</p>
@@ -160,6 +160,7 @@
                 version: 2,
                 type: 'search',
                 search: '#beanunit',
+                rpp: 50,
                 interval: 4000,
                 title: 'Filter',
                 subject: '#beanunit',
@@ -178,13 +179,13 @@
                 },
                 features: {
                     scrollbar: false,
-                    loop: true,
+                    loop: false,
                     live: true,
                     hashtags: true,
                     timestamp: true,
                     avatars: true,
                     toptweets: true,
-                    behavior: 'default'
+                    behavior: 'all'
                 }
             }).render().start();
         </script>
@@ -200,8 +201,8 @@
 
     <p>You can also clone the project with <a href="http://git-scm.com">Git</a>
         by running:
-    <pre>$ git clone git://github.com/IvoNet/beanunit</pre>
     </p>
+    <pre>$ git clone git://github.com/IvoNet/beanunit</pre>
 
     <div class="footer">
         get the source code on GitHub : <a href="http://github.com/IvoNet/beanunit">IvoNet/beanunit</a>
