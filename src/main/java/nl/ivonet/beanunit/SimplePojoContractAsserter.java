@@ -128,16 +128,8 @@ public final class SimplePojoContractAsserter extends Asserter {
     }
 
     /**
-     * @param classUnderTest the object on which to invoke the getter and setter
-     * @see {@link SimplePojoContractAsserter#assertBasicGetterSetterBehavior(Class, String, Object)} method. No items are blacklisted.
-     */
-    public static <T> void assertBasicGetterSetterBehavior(final Class<T> classUnderTest) {
-        assertBasicGetterSetterBehaviorWithBlacklist(classUnderTest);
-    }
-
-    /**
-     * @param classUnderTest the object on which to invoke the getter and setter
-     * @param propertyNames  the list of property names that should not be tested
+     * @param classUnderTest     the object on which to invoke the getter and setter
+     * @param excludedProperties the list of property names that should not be tested
      * @see {@link SimplePojoContractAsserter#assertBasicGetterSetterBehavior(Class, String, Object)} method. Big difference here is that we try to
      *      automatically introspect the target object, finding read/write properties, and automatically testing the getter
      *      and setter. Note specifically that read-only properties are ignored, as there is no way for us to know how to set
@@ -146,9 +138,9 @@ public final class SimplePojoContractAsserter extends Asserter {
      *      Any property names contained in the blacklist will be skipped.
      *      <p/>
      */
-    public static <T> void assertBasicGetterSetterBehaviorWithBlacklist(final Class<T> classUnderTest,
-                                                                        final String... propertyNames) {
-        final List<String> blacklist = Arrays.asList(propertyNames);
+    public static <T> void assertBasicGetterSetterBehavior(final Class<T> classUnderTest,
+                                                           final String... excludedProperties) {
+        final List<String> blacklist = Arrays.asList(excludedProperties);
         try {
             final BeanInfo beanInfo = Introspector.getBeanInfo(classUnderTest);
             final PropertyDescriptor[] descriptors = beanInfo.getPropertyDescriptors();
@@ -187,7 +179,7 @@ public final class SimplePojoContractAsserter extends Asserter {
             final T one = classUnderTest.newInstance();
             final T two = classUnderTest.newInstance();
 
-            final Class<?> equalsDeclaringClass = classUnderTest.getMethod("equals", Object.class).getDeclaringClass();
+            final Class<?> equalsDeclaringClass = retrieveEqualsMethodDeclaringClass(classUnderTest);
             final Class<?> hashCodeDeclaringClass = classUnderTest.getMethod("hashCode").getDeclaringClass();
             if (equalsDeclaringClass.getName().equals(JAVA_LANG_OBJECT) && hashCodeDeclaringClass.getName()
                                                                                    .equals(JAVA_LANG_OBJECT)) {
@@ -272,4 +264,33 @@ public final class SimplePojoContractAsserter extends Asserter {
 
     private static class OtherType {
     }
+
+    /**
+     * Tests the complete pojo in one complete run.
+     * <p/>
+     * In most cases the method to use. Tests everything on the pojo.
+     *
+     * @param classUnderTest     the implementation.class
+     * @param excludedProperties string representation of all the properties excluded from the equals test , e.g. "firstName"
+     * @param <T>                the type of the class to test
+     */
+    public static <T> void assertBean(final Class<T> classUnderTest, final String... excludedProperties) {
+
+        assertBasicGetterSetterBehavior(classUnderTest, excludedProperties);
+
+        try {
+            final Class<?> declaringClass = retrieveEqualsMethodDeclaringClass(classUnderTest);
+            if (classUnderTest.getSimpleName().equals(declaringClass.getSimpleName())) {
+                assertEqualsHashCode(classUnderTest, excludedProperties);
+            }
+        } catch (NoSuchMethodException e) {
+            fail("Should never be possible unless the equals class has been removed from Object");
+        }
+    }
+
+    private static Class<?> retrieveEqualsMethodDeclaringClass(final Class<?> classUnderTest)
+            throws NoSuchMethodException {
+        return classUnderTest.getMethod("equals", Object.class).getDeclaringClass();
+    }
+
 }

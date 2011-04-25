@@ -30,7 +30,7 @@ import simplepojo.WrongSinpleBean;
 import simplepojo.ZipCode;
 
 import static nl.ivonet.beanunit.SimplePojoContractAsserter.assertBasicGetterSetterBehavior;
-import static nl.ivonet.beanunit.SimplePojoContractAsserter.assertBasicGetterSetterBehaviorWithBlacklist;
+import static nl.ivonet.beanunit.SimplePojoContractAsserter.assertBean;
 import static nl.ivonet.beanunit.SimplePojoContractAsserter.assertEqualsHashCode;
 
 /**
@@ -81,9 +81,9 @@ public class SimplePojoContractAsserterTest {
 
     @Test
     public void testPropertiesBlackList() throws Exception {
-        assertBasicGetterSetterBehaviorWithBlacklist(Person.class, "name", "birthDate");
-        assertBasicGetterSetterBehaviorWithBlacklist(Address.class, "zip");
-        assertBasicGetterSetterBehaviorWithBlacklist(SimpleBean.class, "times");
+        assertBasicGetterSetterBehavior(Person.class, "name", "birthDate");
+        assertBasicGetterSetterBehavior(Address.class, "zip");
+        assertBasicGetterSetterBehavior(SimpleBean.class, "times");
     }
 
     @Test
@@ -98,5 +98,15 @@ public class SimplePojoContractAsserterTest {
     @Test(expected = AssertionError.class)
     public void testPrivateConstructor() throws Exception {
         assertBasicGetterSetterBehavior(PrivateConstructor.class);
+    }
+
+    @Test
+    public void testAssertPojo() throws Exception {
+        assertBean(Person.class);
+    }
+
+    @Test
+    public void testPojoNoEquals() throws Exception {
+        assertBean(ZipCode.class);
     }
 }

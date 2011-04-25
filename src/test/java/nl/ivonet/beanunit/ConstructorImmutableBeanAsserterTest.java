@@ -27,8 +27,10 @@ import immutable.BusinessLocationDto;
 import immutable.Employee;
 import immutable.InventoryDto;
 import immutable.NotImmutableBuildingDto;
+import immutable.Person;
 
 import static nl.ivonet.beanunit.Asserter.registerTypeAndDefaultArgument;
+import static nl.ivonet.beanunit.ConstructorImmutableBeanAsserter.assertBean;
 import static nl.ivonet.beanunit.ConstructorImmutableBeanAsserter.assertEqualsHashCode;
 import static nl.ivonet.beanunit.ConstructorImmutableBeanAsserter.assertGettersOnConstructorImmutableObject;
 
@@ -86,4 +88,13 @@ public class ConstructorImmutableBeanAsserterTest {
         assertEqualsHashCode(Employee.class);
     }
 
+    @Test
+    public void testBean() throws Exception {
+        assertBean(Person.class);
+    }
+
+    @Test(expected = AssertionError.class)
+    public void testBeanWrong() throws Exception {
+        assertBean(BusinessLocationDto.class);
+    }
 }

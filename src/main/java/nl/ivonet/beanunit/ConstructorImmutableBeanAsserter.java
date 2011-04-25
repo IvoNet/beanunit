@@ -153,6 +153,32 @@ public class ConstructorImmutableBeanAsserter extends Asserter {
         }
     }
 
+    /**
+     * Performs all the tests defined in this class on an Immutable bean.
+     * <p/>
+     * In most situations this is the method to use.
+     *
+     * @param classUnderTest     the {@link Class} to test
+     * @param excludedProperties property to exclude from testing if some of the rules are not nicely upheld :-)
+     * @param <T>                the type of the class under test.
+     */
+    public static <T> void assertBean(final Class<T> classUnderTest, final String... excludedProperties) {
+        assertGettersOnConstructorImmutableObject(classUnderTest, excludedProperties);
+        try {
+            final Class<?> declaringClass = retrieveEqualsMethodDeclaringClass(classUnderTest);
+            if (classUnderTest.getSimpleName().equals(declaringClass.getSimpleName())) {
+                assertEqualsHashCode(classUnderTest);
+            }
+        } catch (NoSuchMethodException e) {
+            fail("Should never be possible unless the equals class has been removed from Object");
+        }
+    }
+
+    private static Class<?> retrieveEqualsMethodDeclaringClass(final Class<?> classUnderTest)
+            throws NoSuchMethodException {
+        return classUnderTest.getMethod("equals", Object.class).getDeclaringClass();
+    }
+
     private static boolean doesNotOverrideObjectMethod(final Class<?> clazz) {
         return clazz.getName().equals(JAVA_LANG_OBJECT);
     }
