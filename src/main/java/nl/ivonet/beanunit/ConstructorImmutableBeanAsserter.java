@@ -122,9 +122,10 @@ public class ConstructorImmutableBeanAsserter extends Asserter {
                 @SuppressWarnings({"unchecked"}) final T one = (T) createObject(constructor);
                 @SuppressWarnings({"unchecked"}) final T two = (T) createObject(constructor);
 
-                final Class<?> equalsDeclaringClass = classUnderTest.getMethod("equals", Object.class)
+                final Class<?> equalsDeclaringClass = classUnderTest.getMethod(EQUALS_METHOD_NAME, Object.class)
                                                               .getDeclaringClass();
-                final Class<?> hashCodeDeclaringClass = classUnderTest.getMethod("hashCode").getDeclaringClass();
+                final Class<?> hashCodeDeclaringClass = classUnderTest.getMethod(HASH_CODE_METHOD_NAME)
+                                                                .getDeclaringClass();
                 if (doesNotOverrideObjectMethod(equalsDeclaringClass)) {
                     fail("If this test is run the equals() method must be overridden by the class under test.");
                 }
@@ -176,7 +177,7 @@ public class ConstructorImmutableBeanAsserter extends Asserter {
 
     private static Class<?> retrieveEqualsMethodDeclaringClass(final Class<?> classUnderTest)
             throws NoSuchMethodException {
-        return classUnderTest.getMethod("equals", Object.class).getDeclaringClass();
+        return classUnderTest.getMethod(EQUALS_METHOD_NAME, Object.class).getDeclaringClass();
     }
 
     private static boolean doesNotOverrideObjectMethod(final Class<?> clazz) {

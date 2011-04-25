@@ -61,7 +61,7 @@ that the tests are useful.
 * Java 1.6 (should there be a 1.5 build to?)
 
  ===============================================================================
-= RULEZ
+= RULEZ / Tests done on the classes under test.
 ===============================================================================
 The tests done on the beans are described below...
 
@@ -92,8 +92,9 @@ The tests done on the beans are described below...
 * Can override equals / hashcode
 
 ===============================================================================
-= Wishlist
+= Usage
 ===============================================================================
-* automatically test equals / hashCode if they are overridden in the class under
-  test (is a separate test now)
-* Try to get this project into maven central (don't know how yet)
+This project is synced to the maven central repository so you can add it as a
+dependency to your maven project.
+
+More explanation here: http://ivonet.github.com/beanunit/

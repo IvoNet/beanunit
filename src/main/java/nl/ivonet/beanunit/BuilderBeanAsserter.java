@@ -105,11 +105,6 @@ public class BuilderBeanAsserter extends Asserter {
         }
     }
 
-//    private static <B> Object createBean(final Class<B> builderUnderTest)
-//            throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
-//        return createBean(builderUnderTest, "build", null);
-//    }
-
     private static <B> Object createBean(final Class<B> builderUnderTest, final String buildMethodName,
                                          final List<String> excludedBuilderMethods)
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
@@ -167,10 +162,6 @@ public class BuilderBeanAsserter extends Asserter {
 
     }
 
-    private static List<String> convertExclusions(final String... excludedBuilderMethods) {
-        return convertExclusions(Arrays.asList(excludedBuilderMethods));
-    }
-
     /**
      * Tests all the flows of the overridden equals and hashCode methods of a class.
      * <p/>
@@ -219,8 +210,8 @@ public class BuilderBeanAsserter extends Asserter {
             @SuppressWarnings({"unchecked"}) final T two = (T) createBean(builderUnderTest, buildMethod,
                                                                                  excludedProperties);
 
-            final Class<?> equalsDeclaringClass = classUnderTest.getMethod("equals", Object.class).getDeclaringClass();
-            final Class<?> hashCodeDeclaringClass = classUnderTest.getMethod("hashCode").getDeclaringClass();
+            final Class<?> equalsDeclaringClass = retrieveEqualsMethodDeclaringClass(classUnderTest);
+            final Class<?> hashCodeDeclaringClass = classUnderTest.getMethod(HASH_CODE_METHOD_NAME).getDeclaringClass();
             if (doesNotOverrideObjectMethod(equalsDeclaringClass)) {
                 fail("If this test is run the equals() method must be overridden by the class under test.");
             }
@@ -250,6 +241,10 @@ public class BuilderBeanAsserter extends Asserter {
         } catch (InvocationTargetException e) {
             fail(e.getMessage());
         }
+    }
+
+    private static List<String> convertExclusions(final String... excludedBuilderMethods) {
+        return convertExclusions(Arrays.asList(excludedBuilderMethods));
     }
 
     private static boolean doesNotOverrideObjectMethod(final Class<?> clazz) {
@@ -429,7 +424,7 @@ public class BuilderBeanAsserter extends Asserter {
 
     private static Class<?> retrieveEqualsMethodDeclaringClass(final Class<?> classUnderTest)
             throws NoSuchMethodException {
-        return classUnderTest.getMethod("equals", Object.class).getDeclaringClass();
+        return classUnderTest.getMethod(EQUALS_METHOD_NAME, Object.class).getDeclaringClass();
     }
 
     private static class OtherType {

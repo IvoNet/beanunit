@@ -58,6 +58,8 @@ public abstract class Asserter {
     static final int TEST_ARRAY_SIZE = 42;
     static final String JAVA_LANG_OBJECT = "java.lang.Object";
     static final String ALWAYS_EXCLUDED = "class";
+    protected static final String EQUALS_METHOD_NAME = "equals";
+
     static final Map<Class, Object> TYPE_ARGUMENTS = new HashMap<Class, Object>();
 
     static {
@@ -96,6 +98,7 @@ public abstract class Asserter {
      */
     static final Map<Class, Object> DEFAULT_TYPE_ARGUMENTS = Collections
                                                                      .unmodifiableMap(new HashMap<Class, Object>(TYPE_ARGUMENTS));
+    protected static final String HASH_CODE_METHOD_NAME = "hashCode";
 
     /**
      * Retrieves the default value based on a Type.

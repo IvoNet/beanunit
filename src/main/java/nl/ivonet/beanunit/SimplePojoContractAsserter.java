@@ -180,7 +180,7 @@ public final class SimplePojoContractAsserter extends Asserter {
             final T two = classUnderTest.newInstance();
 
             final Class<?> equalsDeclaringClass = retrieveEqualsMethodDeclaringClass(classUnderTest);
-            final Class<?> hashCodeDeclaringClass = classUnderTest.getMethod("hashCode").getDeclaringClass();
+            final Class<?> hashCodeDeclaringClass = classUnderTest.getMethod(HASH_CODE_METHOD_NAME).getDeclaringClass();
             if (equalsDeclaringClass.getName().equals(JAVA_LANG_OBJECT) && hashCodeDeclaringClass.getName()
                                                                                    .equals(JAVA_LANG_OBJECT)) {
                 fail(String.format("The Class<%s> under test does not override the equals and hashCode method",
@@ -290,7 +290,7 @@ public final class SimplePojoContractAsserter extends Asserter {
 
     private static Class<?> retrieveEqualsMethodDeclaringClass(final Class<?> classUnderTest)
             throws NoSuchMethodException {
-        return classUnderTest.getMethod("equals", Object.class).getDeclaringClass();
+        return classUnderTest.getMethod(EQUALS_METHOD_NAME, Object.class).getDeclaringClass();
     }
 
 }
