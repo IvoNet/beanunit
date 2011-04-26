@@ -106,6 +106,6 @@ More explanation here: http://ivonet.github.com/beanunit/
 * Add option to ask for a default created bean for further testing. Use the
   build in code to instantiate a complete (default) object not a mock so the
   developer can test more.
-* Automated testing of enums? is it possible / nessesary?
+* Automated testing of enums? is it possible / necessary?
 * Is testing of the toString() method an option.
 ** Test if toString does something else then Object.toString.
