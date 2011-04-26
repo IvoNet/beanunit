@@ -61,7 +61,7 @@ that the tests are useful.
 * Java 1.6 (should there be a 1.5 build to?)
 
  ===============================================================================
-= RULEZ / Tests done on the classes under test.
+= RULEZ
 ===============================================================================
 The tests done on the beans are described below...
 
@@ -98,3 +98,14 @@ This project is synced to the maven central repository so you can add it as a
 dependency to your maven project.
 
 More explanation here: http://ivonet.github.com/beanunit/
+
+===============================================================================
+= Whishes
+===============================================================================
+* Add null tests for the CIBA class?
+* Add option to ask for a default created bean for further testing. Use the
+  build in code to instantiate a complete (default) object not a mock so the
+  developer can test more.
+* Automated testing of enums? is it possible / nessesary?
+* Is testing of the toString() method an option.
+** Test if toString does something else then Object.toString.
