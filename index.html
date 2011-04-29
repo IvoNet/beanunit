@@ -123,8 +123,33 @@
     &lt;/dependencies>
     </pre>
 
-    <h2>License</h2>
+    <h2>Usage examples</h2>
 
+    <p>
+        Example 1: Simple POJO called Person
+    <pre>
+    @Test
+    public void testAssertPojo() throws Exception {
+        <b>SimplePojoContractAsserter</b>.assertBean(Person.class);
+    }
+    </pre>
+    Example 2: Bean created by constructor and immutable after construction
+    <pre>
+    @Test
+    public void testAssertPojo() throws Exception {
+        <b>ConstructorImmutableBeanAsserter</b>.assertBean(Person.class);
+    }
+    </pre>
+    Example 1: Immutable bean created by a Builder
+    <pre>
+    @Test
+    public void testAssertPojo() throws Exception {
+        <b>BuilderBeanAsserter</b>.assertBean(Person.class);
+    }
+    </pre>
+    </p>
+
+    <h2>License</h2>
 
     <pre>
     Copyright 2011 Ivo Woltring
@@ -160,7 +185,6 @@
                 version: 2,
                 type: 'search',
                 search: '#beanunit',
-                rpp: 50,
                 interval: 4000,
                 title: 'Filter',
                 subject: '#beanunit',
