@@ -66,7 +66,7 @@ public final class SimplePojoContractAsserter extends Asserter {
      * @param classUnderTest the object on which to invoke the getter and setter
      * @param property       the property name, e.g. "firstName"
      */
-    public static <T> void assertBasicGetterSetterBehavior(final Class<T> classUnderTest, final String property) {
+    protected static <T> void assertBasicGetterSetterBehavior(final Class<T> classUnderTest, final String property) {
         assertBasicGetterSetterBehavior(classUnderTest, property, null);
     }
 
@@ -79,8 +79,8 @@ public final class SimplePojoContractAsserter extends Asserter {
      * @param property       the property name, e.g. "firstName"
      * @param argument       the property value, i.e. the value the setter will be invoked with
      */
-    public static <T> void assertBasicGetterSetterBehavior(final Class<T> classUnderTest, final String property,
-                                                           final Object argument) {
+    protected static <T> void assertBasicGetterSetterBehavior(final Class<T> classUnderTest, final String property,
+                                                              final Object argument) {
         try {
             final T testObject = classUnderTest.newInstance();
             final PropertyDescriptor descriptor = new PropertyDescriptor(property, classUnderTest);
@@ -119,8 +119,8 @@ public final class SimplePojoContractAsserter extends Asserter {
      *      containing property name/value pairs. Use this to test a bunch of property accessors at once. Note that the
      *      values in the map can be null, and in that case we'll try to supply a default argument.
      */
-    public static <T> void assertBasicGetterSetterBehavior(final Class<T> classUnderTest,
-                                                           final Map<String, Object> properties) {
+    protected static <T> void assertBasicGetterSetterBehavior(final Class<T> classUnderTest,
+                                                              final Map<String, Object> properties) {
         final Set<Map.Entry<String, Object>> entries = properties.entrySet();
         for (final Map.Entry<String, Object> entry : entries) {
             assertBasicGetterSetterBehavior(classUnderTest, entry.getKey(), entry.getValue());
@@ -138,8 +138,8 @@ public final class SimplePojoContractAsserter extends Asserter {
      *      Any property names contained in the blacklist will be skipped.
      *      <p/>
      */
-    public static <T> void assertBasicGetterSetterBehavior(final Class<T> classUnderTest,
-                                                           final String... excludedProperties) {
+    protected static <T> void assertBasicGetterSetterBehavior(final Class<T> classUnderTest,
+                                                              final String... excludedProperties) {
         final List<String> blacklist = Arrays.asList(excludedProperties);
         try {
             final BeanInfo beanInfo = Introspector.getBeanInfo(classUnderTest);
@@ -172,7 +172,7 @@ public final class SimplePojoContractAsserter extends Asserter {
      * @param excludedProperties string representation of all the properties excluded from the equals test , e.g. "firstName"
      * @param <T>                the type of the class to test
      */
-    public static <T> void assertEqualsHashCode(final Class<T> classUnderTest, final String... excludedProperties) {
+    protected static <T> void assertEqualsHashCode(final Class<T> classUnderTest, final String... excludedProperties) {
         final List<String> blacklist = new ArrayList<String>(Arrays.asList(excludedProperties));
         blacklist.add(ALWAYS_EXCLUDED);
         try {
@@ -260,9 +260,6 @@ public final class SimplePojoContractAsserter extends Asserter {
         } catch (InvocationTargetException e) {
             fail(e.getMessage());
         }
-    }
-
-    private static class OtherType {
     }
 
     /**

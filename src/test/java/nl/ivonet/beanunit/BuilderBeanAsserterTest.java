@@ -48,6 +48,30 @@ public class BuilderBeanAsserterTest {
         BuilderBeanAsserter.resetToDefaultTypes();
     }
 
+    //The following tests demonstrate the how to use beanunit.
+
+    @Test
+    public void testAssertBean() throws Exception {
+        assertBean(AddressDto.class);
+    }
+
+    @Test
+    public void testAssertBean2() throws Exception {
+        assertBean(BuilderHasOtherNameBean.class, BuilderHasOtherNameBean.Creator.class, "doit", null, null);
+    }
+
+    @Test
+    public void testAssertBean3() throws Exception {
+        assertBean(SimpleBuilderBean.class, SimpleBuilderBean.Builder.class);
+    }
+
+    @Test
+    public void testAssertBean4() throws Exception {
+        assertBean(BuilderWithConstructorBean.class, BuilderWithConstructorBean.Builder.class, "list");
+    }
+
+    //Unit tests for the application itself.
+
     @SuppressWarnings({"unchecked"})
     @Test
     public void testAssertBuildObjectGetterBehavior() throws Exception {
@@ -128,23 +152,4 @@ public class BuilderBeanAsserterTest {
         assertEqualsHashCode(EqualsMethodButNoHasCode.class);
     }
 
-    @Test
-    public void testAssertBean() throws Exception {
-        assertBean(AddressDto.class);
-    }
-
-    @Test
-    public void testAssertBean2() throws Exception {
-        assertBean(BuilderHasOtherNameBean.class, BuilderHasOtherNameBean.Creator.class, "doit", null, null);
-    }
-
-    @Test
-    public void testAssertBean3() throws Exception {
-        assertBean(SimpleBuilderBean.class, SimpleBuilderBean.Builder.class);
-    }
-
-    @Test
-    public void testAssertBean4() throws Exception {
-        assertBean(BuilderWithConstructorBean.class, BuilderWithConstructorBean.Builder.class, "list");
-    }
 }

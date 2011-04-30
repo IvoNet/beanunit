@@ -59,6 +59,8 @@ public abstract class Asserter {
     static final String JAVA_LANG_OBJECT = "java.lang.Object";
     static final String ALWAYS_EXCLUDED = "class";
     protected static final String EQUALS_METHOD_NAME = "equals";
+    protected static final String HASH_CODE_METHOD_NAME = "hashCode";
+    protected static final String TO_STRING_METHOD_NAME = "toString";
 
     static final Map<Class, Object> TYPE_ARGUMENTS = new HashMap<Class, Object>();
 
@@ -98,7 +100,6 @@ public abstract class Asserter {
      */
     static final Map<Class, Object> DEFAULT_TYPE_ARGUMENTS = Collections
                                                                      .unmodifiableMap(new HashMap<Class, Object>(TYPE_ARGUMENTS));
-    protected static final String HASH_CODE_METHOD_NAME = "hashCode";
 
     /**
      * Retrieves the default value based on a Type.
@@ -198,7 +199,7 @@ public abstract class Asserter {
         return arguments.toArray();
     }
 
-    static Object createObject(final Constructor<?> constructor, final Object[] arguments) {
+    public static Object createObject(final Constructor<?> constructor, final Object[] arguments) {
         try {
             return constructor.newInstance(arguments);
         } catch (InstantiationException e) {
@@ -220,8 +221,23 @@ public abstract class Asserter {
      * @param constructor the constructor to invoke
      * @return object belonging to the constructor.
      */
-    static Object createObject(final Constructor<?> constructor) {
+    public static Object createObject(final Constructor<?> constructor) {
         return createObject(constructor, createConstructorParameterList(constructor));
+    }
+
+    //FIXME this test is not finished
+    static <T> void assertToString(final Class<T> classUnderTest) {
+        try {
+            final Class<?> declaringClass = classUnderTest.getMethod(TO_STRING_METHOD_NAME).getDeclaringClass();
+            if (classUnderTest.getSimpleName().equals(declaringClass.getSimpleName())) {
+
+            }
+        } catch (NoSuchMethodException e) {
+            fail("The toString method should always be available");
+        }
+    }
+
+    static class OtherType {
     }
 
 }

@@ -39,6 +39,26 @@ import static nl.ivonet.beanunit.SimplePojoContractAsserter.assertEqualsHashCode
  * @author Ivo Woltring
  */
 public class SimplePojoContractAsserterTest {
+
+    //The following tests demonstrate the how to use beanunit
+
+    @Test
+    public void testAssertPojo() throws Exception {
+        assertBean(Person.class);
+    }
+
+    @Test
+    public void testPojoNoEquals() throws Exception {
+        assertBean(ZipCode.class);
+    }
+
+    @Test
+    public void testPojoExcludePropertie() throws Exception {
+        assertBean(Person.class, "name");
+    }
+
+    //Tests below are to test the code itself not to demonstrate the usage
+
     @Test(expected = AssertionError.class)
     public void testAssertEqualsHashCodeNotOverridden() throws Exception {
         assertEqualsHashCode(ZipCode.class);
@@ -98,15 +118,5 @@ public class SimplePojoContractAsserterTest {
     @Test(expected = AssertionError.class)
     public void testPrivateConstructor() throws Exception {
         assertBasicGetterSetterBehavior(PrivateConstructor.class);
-    }
-
-    @Test
-    public void testAssertPojo() throws Exception {
-        assertBean(Person.class);
-    }
-
-    @Test
-    public void testPojoNoEquals() throws Exception {
-        assertBean(ZipCode.class);
     }
 }

@@ -66,18 +66,17 @@ public class BuilderBeanAsserter extends Asserter {
      * @param <T>                     the type of the classUnderTest
      * @param <B>                     the type of the builder
      */
-    public static <T, B> void assertBuildObjectGetterBehavior(final Class<T> classUnderTest,
-                                                              final Class<B> builderUnderTest,
-                                                              final String buildMethodName,
-                                                              final List<String> excludedBuilderMethods,
-                                                              final List<String> excludedClassProperties) {
+    static <T, B> void assertBuildObjectGetterBehavior(final Class<T> classUnderTest, final Class<B> builderUnderTest,
+                                                       final String buildMethodName,
+                                                       final List<String> excludedBuilderMethods,
+                                                       final List<String> excludedClassProperties) {
 
         final List<String> blackListClassProperties = convertExclusions(excludedClassProperties);
         blackListClassProperties.add(ALWAYS_EXCLUDED);
 
         try {
             @SuppressWarnings({"unchecked"})
-            final T objectUnderTest = (T) createBean(builderUnderTest, buildMethodName, excludedBuilderMethods);
+            final T objectUnderTest = (T) createObject(builderUnderTest, buildMethodName, excludedBuilderMethods);
 
             final BeanInfo beanInfo = Introspector.getBeanInfo(classUnderTest);
             final PropertyDescriptor[] descriptors = beanInfo.getPropertyDescriptors();
@@ -105,8 +104,8 @@ public class BuilderBeanAsserter extends Asserter {
         }
     }
 
-    private static <B> Object createBean(final Class<B> builderUnderTest, final String buildMethodName,
-                                         final List<String> excludedBuilderMethods)
+    public static <B> Object createObject(final Class<B> builderUnderTest, final String buildMethodName,
+                                          final List<String> excludedBuilderMethods)
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         final List<String> blacklistBuilderMethods = convertExclusions(excludedBuilderMethods);
         blacklistBuilderMethods.add(ALWAYS_EXCLUDED);
@@ -177,7 +176,7 @@ public class BuilderBeanAsserter extends Asserter {
      * @param excludedProperties string representation of all the properties excluded from the equals test , e.g. "firstName"
      * @param <T>                the type of the class to test
      */
-    public static <T> void assertEqualsHashCode(final Class<T> classUnderTest, final String... excludedProperties) {
+    protected static <T> void assertEqualsHashCode(final Class<T> classUnderTest, final String... excludedProperties) {
         assertEqualsHashCode(classUnderTest, findBuilder(classUnderTest), BUILD_METHOD_NAME,
                                     convertExclusions(excludedProperties));
 
@@ -200,15 +199,15 @@ public class BuilderBeanAsserter extends Asserter {
      * @param excludedProperties string representation of all the properties excluded from the equals test , e.g. "firstName"
      * @param <T>                the type of the class to test
      */
-    public static <T, B> void assertEqualsHashCode(final Class<T> classUnderTest, final Class<B> builderUnderTest,
-                                                   final String buildMethod, final List<String> excludedProperties) {
+    protected static <T, B> void assertEqualsHashCode(final Class<T> classUnderTest, final Class<B> builderUnderTest,
+                                                      final String buildMethod, final List<String> excludedProperties) {
         final ArrayList<String> blacklist = new ArrayList<String>(excludedProperties);
         blacklist.add(ALWAYS_EXCLUDED);
         try {
-            @SuppressWarnings({"unchecked"}) final T one = (T) createBean(builderUnderTest, buildMethod,
-                                                                                 excludedProperties);
-            @SuppressWarnings({"unchecked"}) final T two = (T) createBean(builderUnderTest, buildMethod,
-                                                                                 excludedProperties);
+            @SuppressWarnings({"unchecked"}) final T one = (T) createObject(builderUnderTest, buildMethod,
+                                                                                   excludedProperties);
+            @SuppressWarnings({"unchecked"}) final T two = (T) createObject(builderUnderTest, buildMethod,
+                                                                                   excludedProperties);
 
             final Class<?> equalsDeclaringClass = retrieveEqualsMethodDeclaringClass(classUnderTest);
             final Class<?> hashCodeDeclaringClass = classUnderTest.getMethod(HASH_CODE_METHOD_NAME).getDeclaringClass();
@@ -259,7 +258,7 @@ public class BuilderBeanAsserter extends Asserter {
      * @param classUnderTest the class to test
      * @param <T>            the type of the classUnderTest
      */
-    public static <T> void assertBuildObjectGetterBehavior(final Class<T> classUnderTest) {
+    protected static <T> void assertBuildObjectGetterBehavior(final Class<T> classUnderTest) {
 
         assertBuildObjectGetterBehavior(classUnderTest, findBuilder(classUnderTest), BUILD_METHOD_NAME,
                                                Collections.<String>emptyList(), Collections.<String>emptyList());
@@ -275,8 +274,8 @@ public class BuilderBeanAsserter extends Asserter {
      * @param exclusionProperties class under test properties to exclude from the test
      * @param <T>                 the type of the classUnderTest
      */
-    public static <T> void assertBuildObjectGetterBehavior(final Class<T> classUnderTest,
-                                                           final String... exclusionProperties) {
+    protected static <T> void assertBuildObjectGetterBehavior(final Class<T> classUnderTest,
+                                                              final String... exclusionProperties) {
 
         assertBuildObjectGetterBehavior(classUnderTest, findBuilder(classUnderTest), BUILD_METHOD_NAME,
                                                Collections.<String>emptyList(), Arrays.asList(exclusionProperties));
@@ -293,8 +292,8 @@ public class BuilderBeanAsserter extends Asserter {
      * @param <T>              the type of the classUnderTest
      * @param <B>              the type of the builder
      */
-    public static <T, B> void assertBuildObjectGetterBehavior(final Class<T> classUnderTest,
-                                                              final Class<B> builderUnderTest) {
+    protected static <T, B> void assertBuildObjectGetterBehavior(final Class<T> classUnderTest,
+                                                                 final Class<B> builderUnderTest) {
 
         assertBuildObjectGetterBehavior(classUnderTest, builderUnderTest, BUILD_METHOD_NAME,
                                                Collections.<String>emptyList(), Collections.<String>emptyList());
@@ -312,9 +311,9 @@ public class BuilderBeanAsserter extends Asserter {
      * @param <T>                 the type of the classUnderTest
      * @param <B>                 the type of the builder
      */
-    public static <T, B> void assertBuildObjectGetterBehavior(final Class<T> classUnderTest,
-                                                              final Class<B> builderUnderTest,
-                                                              final String... exclusionProperties) {
+    protected static <T, B> void assertBuildObjectGetterBehavior(final Class<T> classUnderTest,
+                                                                 final Class<B> builderUnderTest,
+                                                                 final String... exclusionProperties) {
 
         assertBuildObjectGetterBehavior(classUnderTest, builderUnderTest, BUILD_METHOD_NAME,
                                                Collections.<String>emptyList(), Arrays.asList(exclusionProperties));
@@ -329,8 +328,8 @@ public class BuilderBeanAsserter extends Asserter {
      * @param exclusionMethodNames the properties to ignore on the builder under test.
      * @param <T>                  the type of the classUnderTest
      */
-    public static <T> void assertBuildObjectGetterBehavior(final Class<T> classUnderTest,
-                                                           final List<String> exclusionMethodNames) {
+    protected static <T> void assertBuildObjectGetterBehavior(final Class<T> classUnderTest,
+                                                              final List<String> exclusionMethodNames) {
 
         assertBuildObjectGetterBehavior(classUnderTest, findBuilder(classUnderTest), BUILD_METHOD_NAME,
                                                exclusionMethodNames, Collections.<String>emptyList());
@@ -427,6 +426,4 @@ public class BuilderBeanAsserter extends Asserter {
         return classUnderTest.getMethod(EQUALS_METHOD_NAME, Object.class).getDeclaringClass();
     }
 
-    private static class OtherType {
-    }
 }

@@ -63,8 +63,8 @@ public class ConstructorImmutableBeanAsserter extends Asserter {
      * @param excludedProperties property to exclude from testing if some of the rules are not nicely upheld :-)
      * @param <T>                the type of the class under test.
      */
-    public static <T> void assertGettersOnConstructorImmutableObject(final Class<T> classUnderTest,
-                                                                     final String... excludedProperties) {
+    protected static <T> void assertGettersOnConstructorImmutableObject(final Class<T> classUnderTest,
+                                                                        final String... excludedProperties) {
         final List<String> blacklist = new ArrayList<String>(Arrays.asList(excludedProperties));
         blacklist.add("class");
 
@@ -114,7 +114,7 @@ public class ConstructorImmutableBeanAsserter extends Asserter {
      * @param classUnderTest the implementation.class
      * @param <T>            the type of the class to test
      */
-    public static <T> void assertEqualsHashCode(final Class<T> classUnderTest) {
+    protected static <T> void assertEqualsHashCode(final Class<T> classUnderTest) {
         try {
 
             final Constructor[] constructors = classUnderTest.getDeclaredConstructors();
@@ -184,6 +184,4 @@ public class ConstructorImmutableBeanAsserter extends Asserter {
         return clazz.getName().equals(JAVA_LANG_OBJECT);
     }
 
-    private static class OtherType {
-    }
 }

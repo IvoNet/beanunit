@@ -52,6 +52,19 @@ public class ConstructorImmutableBeanAsserterTest {
         SimplePojoContractAsserter.resetToDefaultTypes();
     }
 
+    //The following tests demonstrate the how to use beanunit
+    @Test
+    public void testBean() throws Exception {
+        assertBean(Person.class);
+    }
+
+    @Test(expected = AssertionError.class)
+    public void testBeanWrong() throws Exception {
+        assertBean(BusinessLocationDto.class);
+    }
+
+    //Tests below are to test the code itself not to demonstrate the usage
+
     @Test(expected = AssertionError.class)
     public void testImmutableObjectThatIsNotImmutable() {
         assertGettersOnConstructorImmutableObject(NotImmutableBuildingDto.class);
@@ -88,13 +101,4 @@ public class ConstructorImmutableBeanAsserterTest {
         assertEqualsHashCode(Employee.class);
     }
 
-    @Test
-    public void testBean() throws Exception {
-        assertBean(Person.class);
-    }
-
-    @Test(expected = AssertionError.class)
-    public void testBeanWrong() throws Exception {
-        assertBean(BusinessLocationDto.class);
-    }
 }
