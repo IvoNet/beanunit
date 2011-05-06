@@ -199,7 +199,7 @@ public abstract class Asserter {
         return arguments.toArray();
     }
 
-    public static Object createObject(final Constructor<?> constructor, final Object[] arguments) {
+    static Object createObject(final Constructor<?> constructor, final Object[] arguments) {
         try {
             return constructor.newInstance(arguments);
         } catch (InstantiationException e) {
@@ -221,7 +221,7 @@ public abstract class Asserter {
      * @param constructor the constructor to invoke
      * @return object belonging to the constructor.
      */
-    public static Object createObject(final Constructor<?> constructor) {
+    static Object createObject(final Constructor<?> constructor) {
         return createObject(constructor, createConstructorParameterList(constructor));
     }
 

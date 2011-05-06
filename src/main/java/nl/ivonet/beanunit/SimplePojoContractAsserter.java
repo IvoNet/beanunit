@@ -23,6 +23,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -140,7 +141,8 @@ public final class SimplePojoContractAsserter extends Asserter {
      */
     protected static <T> void assertBasicGetterSetterBehavior(final Class<T> classUnderTest,
                                                               final String... excludedProperties) {
-        final List<String> blacklist = Arrays.asList(excludedProperties);
+        final List<String> blacklist =
+                excludedProperties == null ? Collections.<String>emptyList() : Arrays.asList(excludedProperties);
         try {
             final BeanInfo beanInfo = Introspector.getBeanInfo(classUnderTest);
             final PropertyDescriptor[] descriptors = beanInfo.getPropertyDescriptors();
@@ -173,7 +175,9 @@ public final class SimplePojoContractAsserter extends Asserter {
      * @param <T>                the type of the class to test
      */
     protected static <T> void assertEqualsHashCode(final Class<T> classUnderTest, final String... excludedProperties) {
-        final List<String> blacklist = new ArrayList<String>(Arrays.asList(excludedProperties));
+        final List<String> blacklist = excludedProperties == null
+                                       ? Collections.<String>emptyList()
+                                       : new ArrayList<String>(Arrays.asList(excludedProperties));
         blacklist.add(ALWAYS_EXCLUDED);
         try {
             final T one = classUnderTest.newInstance();
@@ -288,6 +292,37 @@ public final class SimplePojoContractAsserter extends Asserter {
     private static Class<?> retrieveEqualsMethodDeclaringClass(final Class<?> classUnderTest)
             throws NoSuchMethodException {
         return classUnderTest.getMethod(EQUALS_METHOD_NAME, Object.class).getDeclaringClass();
+    }
+
+    public static <T> T createObject(final Class<T> classUnderTest, final String... exclusionProperties) {
+        final List<String> blacklist =
+                exclusionProperties == null ? Collections.<String>emptyList() : Arrays.asList(exclusionProperties);
+        T testObject = null;
+        try {
+            final BeanInfo beanInfo = Introspector.getBeanInfo(classUnderTest);
+            final PropertyDescriptor[] descriptors = beanInfo.getPropertyDescriptors();
+            testObject = classUnderTest.newInstance();
+            for (final PropertyDescriptor descriptor : descriptors) {
+                if (descriptor.getWriteMethod() == null) {
+                    continue;
+                }
+                if (!blacklist.contains(descriptor.getDisplayName())) {
+                    assertBasicGetterSetterBehavior(classUnderTest, descriptor.getDisplayName());
+                }
+
+                final Method writeMethod = descriptor.getWriteMethod();
+                writeMethod.invoke(testObject, retrieveDefaultValueByType(descriptor.getPropertyType()));
+            }
+        } catch (final IntrospectionException e) {
+            fail(String.format("Failed while introspecting [%s].", classUnderTest));
+        } catch (InvocationTargetException e) {
+            fail(e.getMessage());
+        } catch (InstantiationException e) {
+            fail(e.getMessage());
+        } catch (IllegalAccessException e) {
+            fail(e.getMessage());
+        }
+        return testObject;
     }
 
 }

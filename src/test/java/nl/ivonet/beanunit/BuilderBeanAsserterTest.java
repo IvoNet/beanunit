@@ -50,23 +50,40 @@ public class BuilderBeanAsserterTest {
 
     //The following tests demonstrate the how to use beanunit.
 
+    /**
+     * All you have to do to test a default Builder Bean.
+     */
     @Test
-    public void testAssertBean() throws Exception {
+    public void testAssertBean() {
         assertBean(AddressDto.class);
     }
 
+    /**
+     * All you have to do to test a Builder bean where the builder has a different name ("Creator") and another
+     * build method ("doit")
+     * <p/>
+     * The null, null parameters can be filled with exclusion properties.
+     * The first null can be filled with builder property exclusions and the second is for exclusions of the
+     * Bean to be build.
+     */
     @Test
-    public void testAssertBean2() throws Exception {
+    public void testAssertBean2() {
         assertBean(BuilderHasOtherNameBean.class, BuilderHasOtherNameBean.Creator.class, "doit", null, null);
     }
 
+    /**
+     * All you have to do to test a bean where you want to provide the Builder separately.
+     */
     @Test
-    public void testAssertBean3() throws Exception {
+    public void testAssertBean3() {
         assertBean(SimpleBuilderBean.class, SimpleBuilderBean.Builder.class);
     }
 
+    /**
+     * All you have to do if you want to test a Builder bean and exclude a property from testing.
+     */
     @Test
-    public void testAssertBean4() throws Exception {
+    public void testAssertBean4() {
         assertBean(BuilderWithConstructorBean.class, BuilderWithConstructorBean.Builder.class, "list");
     }
 

@@ -70,4 +70,15 @@ public class SimpleBean {
         result = 31 * result + (trueOrFalse ? 1 : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("SimpleBean");
+        sb.append("{hello='").append(hello).append('\'');
+        sb.append(", times=").append(times);
+        sb.append(", trueOrFalse=").append(trueOrFalse);
+        sb.append('}');
+        return sb.toString();
+    }
 }

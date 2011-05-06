@@ -32,6 +32,9 @@ import simplepojo.ZipCode;
 import static nl.ivonet.beanunit.SimplePojoContractAsserter.assertBasicGetterSetterBehavior;
 import static nl.ivonet.beanunit.SimplePojoContractAsserter.assertBean;
 import static nl.ivonet.beanunit.SimplePojoContractAsserter.assertEqualsHashCode;
+import static nl.ivonet.beanunit.SimplePojoContractAsserter.createObject;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Unit tests for the {@link nl.ivonet.beanunit.SimplePojoContractAsserter} class
@@ -47,14 +50,27 @@ public class SimplePojoContractAsserterTest {
         assertBean(Person.class);
     }
 
+    /**
+     * All you have to declare to test a simple pojo almost completely.
+     */
     @Test
-    public void testPojoNoEquals() throws Exception {
+    public void testPojoNoEquals() {
         assertBean(ZipCode.class);
     }
 
+    /**
+     * All you have to declare to test a pojo and exclude a property from the test.
+     */
     @Test
-    public void testPojoExcludePropertie() throws Exception {
+    public void testPojoExcludePropertie() {
         assertBean(Person.class, "name");
+    }
+
+    @Test
+    public void tesCreateObject() throws Exception {
+        final SimpleBean bean = createObject(SimpleBean.class);
+        assertNotNull(bean);
+        assertEquals("SimpleBean{hello='String', times=42, trueOrFalse=true}", bean.toString());
     }
 
     //Tests below are to test the code itself not to demonstrate the usage
@@ -119,4 +135,5 @@ public class SimplePojoContractAsserterTest {
     public void testPrivateConstructor() throws Exception {
         assertBasicGetterSetterBehavior(PrivateConstructor.class);
     }
+
 }

@@ -142,6 +142,30 @@ public class BuilderBeanAsserter extends Asserter {
         return buildMethod.invoke(builder);
     }
 
+    /**
+     * Creates the object created by the Builder called "Builder" and a build method called "build".
+     *
+     * @param classUnderTest      the class created
+     * @param exclusionProperties properties not to use during the build
+     * @param <T>                 the type of the class created
+     * @return object of type T
+     */
+    @SuppressWarnings({"unchecked"})
+    public static <T> T createObject(final Class<T> classUnderTest, final String... exclusionProperties) {
+        final Class<?> builder = findBuilder(classUnderTest);
+        try {
+            return (T) createObject(builder, BUILD_METHOD_NAME, convertExclusions(exclusionProperties));
+        } catch (NoSuchMethodException e) {
+            fail(e.getMessage());
+        } catch (IllegalAccessException e) {
+            fail(e.getMessage());
+        } catch (InvocationTargetException e) {
+            fail(e.getMessage());
+        }
+        fail("Could not create Object");
+        return null;
+    }
+
     private static boolean isReturnTypeTheBuilder(final Class builderUnderTest, final Method method) {
         return builderUnderTest.getSimpleName().equals(method.getReturnType().getSimpleName());
     }
@@ -277,8 +301,10 @@ public class BuilderBeanAsserter extends Asserter {
     protected static <T> void assertBuildObjectGetterBehavior(final Class<T> classUnderTest,
                                                               final String... exclusionProperties) {
 
+        final List<String> excludedClassProperties =
+                exclusionProperties == null ? Collections.<String>emptyList() : Arrays.asList(exclusionProperties);
         assertBuildObjectGetterBehavior(classUnderTest, findBuilder(classUnderTest), BUILD_METHOD_NAME,
-                                               Collections.<String>emptyList(), Arrays.asList(exclusionProperties));
+                                               Collections.<String>emptyList(), excludedClassProperties);
 
     }
 

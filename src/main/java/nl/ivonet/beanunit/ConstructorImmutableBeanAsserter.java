@@ -24,6 +24,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -65,7 +66,9 @@ public class ConstructorImmutableBeanAsserter extends Asserter {
      */
     protected static <T> void assertGettersOnConstructorImmutableObject(final Class<T> classUnderTest,
                                                                         final String... excludedProperties) {
-        final List<String> blacklist = new ArrayList<String>(Arrays.asList(excludedProperties));
+        final List<String> blacklist = excludedProperties == null
+                                       ? Collections.<String>emptyList()
+                                       : new ArrayList<String>(Arrays.asList(excludedProperties));
         blacklist.add("class");
 
         try {
@@ -152,6 +155,18 @@ public class ConstructorImmutableBeanAsserter extends Asserter {
         } catch (NoSuchMethodException e) {
             fail("There is no equals or hashCode method. which is weird :-)");
         }
+    }
+
+    /**
+     * Creates an Object <T> based on the first constructor in the constructor list.
+     *
+     * @param classUnderTest the class to construct
+     * @param <T>            the type of the class to return
+     * @return Object of type T
+     */
+    public static <T> T createObject(final Class<T> classUnderTest) {
+        //noinspection unchecked
+        return (T) createObject(classUnderTest.getDeclaredConstructors()[0]);
     }
 
     /**

@@ -30,9 +30,12 @@ import immutable.NotImmutableBuildingDto;
 import immutable.Person;
 
 import static nl.ivonet.beanunit.Asserter.registerTypeAndDefaultArgument;
+import static nl.ivonet.beanunit.Asserter.resetToDefaultTypes;
 import static nl.ivonet.beanunit.ConstructorImmutableBeanAsserter.assertBean;
 import static nl.ivonet.beanunit.ConstructorImmutableBeanAsserter.assertEqualsHashCode;
 import static nl.ivonet.beanunit.ConstructorImmutableBeanAsserter.assertGettersOnConstructorImmutableObject;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Unit tests for the {@link SimplePojoContractAsserter} class.
@@ -49,10 +52,11 @@ public class ConstructorImmutableBeanAsserterTest {
 
     @After
     public void tearDown() throws Exception {
-        SimplePojoContractAsserter.resetToDefaultTypes();
+        resetToDefaultTypes();
     }
 
     //The following tests demonstrate the how to use beanunit
+
     @Test
     public void testBean() throws Exception {
         assertBean(Person.class);
@@ -61,6 +65,13 @@ public class ConstructorImmutableBeanAsserterTest {
     @Test(expected = AssertionError.class)
     public void testBeanWrong() throws Exception {
         assertBean(BusinessLocationDto.class);
+    }
+
+    @Test
+    public void testCreateObject() throws Exception {
+        final Employee employee = ConstructorImmutableBeanAsserter.createObject(Employee.class);
+        assertNotNull(employee);
+        assertEquals("Employee{id='String'}", employee.toString());
     }
 
     //Tests below are to test the code itself not to demonstrate the usage
