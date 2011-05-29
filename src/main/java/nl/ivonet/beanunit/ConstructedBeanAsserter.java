@@ -48,9 +48,9 @@ import static org.junit.Assert.fail;
  *
  * @author Ivo Woltring
  */
-public class ConstructorImmutableBeanAsserter extends Asserter {
+public class ConstructedBeanAsserter extends Asserter {
 
-    private ConstructorImmutableBeanAsserter() {
+    private ConstructedBeanAsserter() {
         //All static so don't create
     }
 

@@ -50,9 +50,9 @@ import static org.junit.Assert.fail;
  *
  * @author Ivo Woltring
  */
-public final class SimplePojoContractAsserter extends Asserter {
+public final class PojoContractAsserter extends Asserter {
 
-    private SimplePojoContractAsserter() {
+    private PojoContractAsserter() {
         //All static so don't create
     }
 
@@ -62,7 +62,7 @@ public final class SimplePojoContractAsserter extends Asserter {
      * FindBugz says this is not correct but I don't see the bad in it :-)
      * <p/>
      * Uses a default argument for basic collection types, primitive types, Dates, java.sql.Dates, and Timestamps.
-     * See {@link SimplePojoContractAsserter#TYPE_ARGUMENTS}.
+     * See {@link PojoContractAsserter#TYPE_ARGUMENTS}.
      *
      * @param classUnderTest the object on which to invoke the getter and setter
      * @param property       the property name, e.g. "firstName"
@@ -116,7 +116,7 @@ public final class SimplePojoContractAsserter extends Asserter {
     /**
      * @param classUnderTest the object on which to invoke the getter and setter
      * @param properties     map of property names to argument values
-     * @see {@link SimplePojoContractAsserter#assertBasicGetterSetterBehavior(Class, String, Object)} method. Only difference is that here we accept a map
+     * @see {@link PojoContractAsserter#assertBasicGetterSetterBehavior(Class, String, Object)} method. Only difference is that here we accept a map
      *      containing property name/value pairs. Use this to test a bunch of property accessors at once. Note that the
      *      values in the map can be null, and in that case we'll try to supply a default argument.
      */
@@ -131,7 +131,7 @@ public final class SimplePojoContractAsserter extends Asserter {
     /**
      * @param classUnderTest     the object on which to invoke the getter and setter
      * @param excludedProperties the list of property names that should not be tested
-     * @see {@link SimplePojoContractAsserter#assertBasicGetterSetterBehavior(Class, String, Object)} method. Big difference here is that we try to
+     * @see {@link PojoContractAsserter#assertBasicGetterSetterBehavior(Class, String, Object)} method. Big difference here is that we try to
      *      automatically introspect the target object, finding read/write properties, and automatically testing the getter
      *      and setter. Note specifically that read-only properties are ignored, as there is no way for us to know how to set
      *      the value (since there isn't a public setter).
@@ -308,10 +308,9 @@ public final class SimplePojoContractAsserter extends Asserter {
                 }
                 if (!blacklist.contains(descriptor.getDisplayName())) {
                     assertBasicGetterSetterBehavior(classUnderTest, descriptor.getDisplayName());
+                    final Method writeMethod = descriptor.getWriteMethod();
+                    writeMethod.invoke(testObject, retrieveDefaultValueByType(descriptor.getPropertyType()));
                 }
-
-                final Method writeMethod = descriptor.getWriteMethod();
-                writeMethod.invoke(testObject, retrieveDefaultValueByType(descriptor.getPropertyType()));
             }
         } catch (final IntrospectionException e) {
             fail(String.format("Failed while introspecting [%s].", classUnderTest));

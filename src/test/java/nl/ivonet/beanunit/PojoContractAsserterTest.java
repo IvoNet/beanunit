@@ -29,19 +29,19 @@ import simplepojo.SimpleBean;
 import simplepojo.WrongSinpleBean;
 import simplepojo.ZipCode;
 
-import static nl.ivonet.beanunit.SimplePojoContractAsserter.assertBasicGetterSetterBehavior;
-import static nl.ivonet.beanunit.SimplePojoContractAsserter.assertBean;
-import static nl.ivonet.beanunit.SimplePojoContractAsserter.assertEqualsHashCode;
-import static nl.ivonet.beanunit.SimplePojoContractAsserter.createObject;
+import static nl.ivonet.beanunit.PojoContractAsserter.assertBasicGetterSetterBehavior;
+import static nl.ivonet.beanunit.PojoContractAsserter.assertBean;
+import static nl.ivonet.beanunit.PojoContractAsserter.assertEqualsHashCode;
+import static nl.ivonet.beanunit.PojoContractAsserter.createObject;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 /**
- * Unit tests for the {@link nl.ivonet.beanunit.SimplePojoContractAsserter} class
+ * Unit tests for the {@link PojoContractAsserter} class
  *
  * @author Ivo Woltring
  */
-public class SimplePojoContractAsserterTest {
+public class PojoContractAsserterTest {
 
     //The following tests demonstrate the how to use beanunit
 
@@ -71,6 +71,13 @@ public class SimplePojoContractAsserterTest {
         final SimpleBean bean = createObject(SimpleBean.class);
         assertNotNull(bean);
         assertEquals("SimpleBean{hello='String', times=42, trueOrFalse=true}", bean.toString());
+    }
+
+    @Test
+    public void testCreateObject2() throws Exception {
+        final SimpleBean bean = createObject(SimpleBean.class, "hello");
+        assertNotNull(bean);
+        assertEquals("SimpleBean{hello='null', times=42, trueOrFalse=true}", bean.toString());
     }
 
     //Tests below are to test the code itself not to demonstrate the usage
@@ -124,7 +131,7 @@ public class SimplePojoContractAsserterTest {
 
     @Test
     public void testOtherThanDefaultProperties() throws Exception {
-        Map<String, Object> properties = new HashMap<String, Object>();
+        final Map<String, Object> properties = new HashMap<String, Object>();
         properties.put("name", "Piet");
         properties.put("birthDate", Date.valueOf("2011-04-11"));
         assertBasicGetterSetterBehavior(Person.class, properties);

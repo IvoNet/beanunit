@@ -31,18 +31,18 @@ import immutable.Person;
 
 import static nl.ivonet.beanunit.Asserter.registerTypeAndDefaultArgument;
 import static nl.ivonet.beanunit.Asserter.resetToDefaultTypes;
-import static nl.ivonet.beanunit.ConstructorImmutableBeanAsserter.assertBean;
-import static nl.ivonet.beanunit.ConstructorImmutableBeanAsserter.assertEqualsHashCode;
-import static nl.ivonet.beanunit.ConstructorImmutableBeanAsserter.assertGettersOnConstructorImmutableObject;
+import static nl.ivonet.beanunit.ConstructedBeanAsserter.assertBean;
+import static nl.ivonet.beanunit.ConstructedBeanAsserter.assertEqualsHashCode;
+import static nl.ivonet.beanunit.ConstructedBeanAsserter.assertGettersOnConstructorImmutableObject;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 /**
- * Unit tests for the {@link SimplePojoContractAsserter} class.
+ * Unit tests for the {@link ConstructedBeanAsserter} class.
  *
  * @author Ivo Woltring
  */
-public class ConstructorImmutableBeanAsserterTest {
+public class ConstructedBeanAsserterTest {
     @Before
     public void setUp() throws Exception {
         registerTypeAndDefaultArgument(AddressDto.class, new AddressDto.Builder().setCity("c").build());
@@ -69,7 +69,7 @@ public class ConstructorImmutableBeanAsserterTest {
 
     @Test
     public void testCreateObject() throws Exception {
-        final Employee employee = ConstructorImmutableBeanAsserter.createObject(Employee.class);
+        final Employee employee = ConstructedBeanAsserter.createObject(Employee.class);
         assertNotNull(employee);
         assertEquals("Employee{id='String'}", employee.toString());
     }
