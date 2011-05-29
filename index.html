@@ -116,7 +116,7 @@
         &lt;dependency>
             &lt;groupId>nl.ivonet&lt;/groupId>
             &lt;artifactId>beanunit&lt;/artifactId>
-            &lt;version>1.0&lt;/version>
+            &lt;version>2.0&lt;/version>
             &lt;scope>test&lt;/scope>
         &lt;/dependency>
         ...
@@ -130,21 +130,47 @@
     <pre>
     @Test
     public void testAssertPojo() throws Exception {
-        <b>SimplePojoContractAsserter</b>.assertBean(Person.class);
+        <b>PojoContractAsserter</b>.<i>assertBean</i>(Person.class);
     }
     </pre>
     Example 2: Bean created by constructor and immutable after construction
     <pre>
     @Test
     public void testAssertPojo() throws Exception {
-        <b>ConstructorImmutableBeanAsserter</b>.assertBean(Person.class);
+        <b>ConstructedBeanAsserter</b>.<i>assertBean</i>(Person.class);
     }
     </pre>
-    Example 1: Immutable bean created by a Builder
+    Example 3: Immutable bean created by a Builder
     <pre>
     @Test
     public void testAssertPojo() throws Exception {
-        <b>BuilderBeanAsserter</b>.assertBean(Person.class);
+        <b>BuilderBeanAsserter</b>.<i>assertBean</i>(Person.class);
+    }
+    </pre>
+    Example 4: Register types for usage by beanunit<br/>
+    If you have special Objects needed to construct your bean that can not be created by a default constructor you need to register them
+    So beanunit can use them in its tests.
+    <pre>
+    @Before
+    public void setUp() throws Exception {
+        <i>registerTypeAndDefaultArgument</i>(AddressDto.class, new AddressDto.Builder().setCity("c").build());
+        <i>registerTypeAndDefaultArgument</i>(BigDecimal.class, new BigDecimal(42));
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        <i>resetToDefaultTypes</i>();
+    }
+    </pre>
+
+    Example 5: Create one of your beans for further testing<br/>
+    The <i>createObject</i> can be a static import from any of the three Asserters.
+    <pre>
+    @Test
+    public void testCreateObject() throws Exception {
+        final Employee employee = <i>createObject</i>(Employee.class);
+        assertNotNull(employee);
+        assertEquals("Employee{id='String'}", employee.toString());
     }
     </pre>
     </p>
@@ -182,38 +208,59 @@
     <p>
         <script>
             new TWTR.Widget({
-                version: 2,
-                type: 'search',
-                search: '#beanunit',
-                interval: 4000,
-                title: 'Filter',
-                subject: '#beanunit',
-                width: 300,
-                height: 300,
-                theme: {
-                    shell: {
-                        background: '#333333',
-                        color: '#ffffff'
-                    },
-                    tweets: {
-                        background: '#000000',
-                        color: '#ffffff',
-                        links: '#00ff00'
-                    }
-                },
-                features: {
-                    scrollbar: true,
-                    loop: false,
-                    live: true,
-                    hashtags: true,
-                    timestamp: true,
-                    avatars: true,
-                    toptweets: true,
-                    behavior: 'all'
-                }
-            }).render().start();
+                        version: 2,
+                        type: 'search',
+                        search: '#beanunit',
+                        interval: 4000,
+                        title: 'Filter',
+                        subject: '#beanunit',
+                        width: 300,
+                        height: 300,
+                        theme: {
+                            shell: {
+                                background: '#333333',
+                                color: '#ffffff'
+                            },
+                            tweets: {
+                                background: '#000000',
+                                color: '#ffffff',
+                                links: '#00ff00'
+                            }
+                        },
+                        features: {
+                            scrollbar: true,
+                            loop: false,
+                            live: true,
+                            hashtags: true,
+                            timestamp: true,
+                            avatars: true,
+                            toptweets: true,
+                            behavior: 'all'
+                        }
+                    }).render().start();
         </script>
     </p>
+
+    <h2>Revision History</h2>
+    <pre>
+    Version 2.0:
+        - Major version because the interface has been changed
+        - Now only the assertBean methods are public
+        - Better names for the Asserter classes.
+        - Easier to use as the above examples will demonstrate
+        - added the <i>createObject</i> method as a convenience for unit testers that want to
+          create an object the easy way for further testing of their own.
+        - Some code cleanup.
+        - More typos
+    Version 1.0:
+        - Fully working version
+        - some textual improvements on <i>fail</i>s
+        - added the assertBean method as a replacement for all the other methods
+        - more unit tests
+    Version 0.3, 0.4 and 0.6
+        - trial versions (fully working of course)
+        - first releases to maven central
+    </pre>
 
     <h2>Download</h2>
 
