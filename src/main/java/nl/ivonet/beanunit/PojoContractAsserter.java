@@ -114,11 +114,12 @@ public final class PojoContractAsserter extends Asserter {
     }
 
     /**
+     * PojoContractAsserter#assertBasicGetterSetterBehavior(Class, String, Object) method. Only difference is that here we accept a map
+     * containing property name/value pairs. Use this to test a bunch of property accessors at once. Note that the
+     * values in the map can be null, and in that case we'll try to supply a default argument.
+     *
      * @param classUnderTest the object on which to invoke the getter and setter
      * @param properties     map of property names to argument values
-     * @see {@link PojoContractAsserter#assertBasicGetterSetterBehavior(Class, String, Object)} method. Only difference is that here we accept a map
-     *      containing property name/value pairs. Use this to test a bunch of property accessors at once. Note that the
-     *      values in the map can be null, and in that case we'll try to supply a default argument.
      */
     protected static <T> void assertBasicGetterSetterBehavior(final Class<T> classUnderTest,
                                                               final Map<String, Object> properties) {
@@ -129,15 +130,16 @@ public final class PojoContractAsserter extends Asserter {
     }
 
     /**
+     * PojoContractAsserter#assertBasicGetterSetterBehavior(Class, String, Object)} method. Big difference here is that we try to
+     * automatically introspect the target object, finding read/write properties, and automatically testing the getter
+     * and setter. Note specifically that read-only properties are ignored, as there is no way for us to know how to set
+     * the value (since there isn't a public setter).
+     * <p/>
+     * Any property names contained in the blacklist will be skipped.
+     * <p/>
+     *
      * @param classUnderTest     the object on which to invoke the getter and setter
      * @param excludedProperties the list of property names that should not be tested
-     * @see {@link PojoContractAsserter#assertBasicGetterSetterBehavior(Class, String, Object)} method. Big difference here is that we try to
-     *      automatically introspect the target object, finding read/write properties, and automatically testing the getter
-     *      and setter. Note specifically that read-only properties are ignored, as there is no way for us to know how to set
-     *      the value (since there isn't a public setter).
-     *      <p/>
-     *      Any property names contained in the blacklist will be skipped.
-     *      <p/>
      */
     protected static <T> void assertBasicGetterSetterBehavior(final Class<T> classUnderTest,
                                                               final String... excludedProperties) {
