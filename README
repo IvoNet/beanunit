@@ -98,14 +98,10 @@ This project is synced to the maven central repository so you can add it as a
 dependency to your maven project.
 
 More explanation here: http://ivonet.github.com/beanunit/
-
 ===============================================================================
 = Whishes
 ===============================================================================
 * Add null tests for the CIBA class?
-* Add option to ask for a default created bean for further testing. Use the
-  build in code to instantiate a complete (default) object not a mock so the
-  developer can test more.
 * Automated testing of enums? is it possible / necessary?
 * Is testing of the toString() method an option.
 ** Test if toString does something else then Object.toString.
