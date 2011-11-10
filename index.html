@@ -126,30 +126,30 @@
     <h2>Usage examples</h2>
 
     <p>
-        Example 1: Simple POJO called Person
+    <h4>Example 1: Simple POJO called Person.</h4>
+    Tip: look at all the possible parameters fot this method. You can also exclude certain properties.
     <pre>
     @Test
     public void testAssertPojo() throws Exception {
         <b>PojoContractAsserter</b>.<i>assertBean</i>(Person.class);
     }
     </pre>
-    Example 2: Bean created by constructor and immutable after construction
+    <h4>Example 2: Bean created by constructor and immutable after construction</h4>
     <pre>
     @Test
     public void testAssertPojo() throws Exception {
         <b>ConstructedBeanAsserter</b>.<i>assertBean</i>(Person.class);
     }
     </pre>
-    Example 3: Immutable bean created by a Builder
+    <h4>Example 3: Immutable bean created by a Builder</h4>
     <pre>
     @Test
     public void testAssertPojo() throws Exception {
         <b>BuilderBeanAsserter</b>.<i>assertBean</i>(Person.class);
     }
     </pre>
-    Example 4: Register types for usage by beanunit<br/>
-    If you have special Objects needed to construct your bean that can not be created by a default constructor you need to register them
-    So beanunit can use them in its tests.
+    <h4>Example 4: Register types for usage by beanunit</h4><br/>
+    If you have special Objects needed to construct your bean that can not be created by a default constructor you need to register them so beanunit can use them in its tests.
     <pre>
     @Before
     public void setUp() throws Exception {
@@ -163,7 +163,7 @@
     }
     </pre>
 
-    Example 5: Create one of your beans for further testing<br/>
+    <h4>Example 5: Create one of your beans for further testing</h4><br/>
     The <i>createObject</i> can be a static import from any of the three Asserters.
     <pre>
     @Test
@@ -208,36 +208,36 @@
     <p>
         <script>
             new TWTR.Widget({
-                        version: 2,
-                        type: 'search',
-                        search: '#beanunit',
-                        interval: 4000,
-                        title: 'Filter',
-                        subject: '#beanunit',
-                        width: 300,
-                        height: 300,
-                        theme: {
-                            shell: {
-                                background: '#333333',
-                                color: '#ffffff'
-                            },
-                            tweets: {
-                                background: '#000000',
-                                color: '#ffffff',
-                                links: '#00ff00'
-                            }
-                        },
-                        features: {
-                            scrollbar: true,
-                            loop: false,
-                            live: true,
-                            hashtags: true,
-                            timestamp: true,
-                            avatars: true,
-                            toptweets: true,
-                            behavior: 'all'
-                        }
-                    }).render().start();
+                version: 2,
+                type: 'search',
+                search: '#beanunit',
+                interval: 4000,
+                title: 'Filter',
+                subject: '#beanunit',
+                width: 300,
+                height: 300,
+                theme: {
+                    shell: {
+                        background: '#333333',
+                        color: '#ffffff'
+                    },
+                    tweets: {
+                        background: '#000000',
+                        color: '#ffffff',
+                        links: '#00ff00'
+                    }
+                },
+                features: {
+                    scrollbar: true,
+                    loop: false,
+                    live: true,
+                    hashtags: true,
+                    timestamp: true,
+                    avatars: true,
+                    toptweets: true,
+                    behavior: 'all'
+                }
+            }).render().start();
         </script>
     </p>
 
