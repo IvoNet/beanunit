@@ -98,9 +98,19 @@ dependency to your maven project.
 
 More explanation here: http://ivonet.github.com/beanunit/
 ===============================================================================
-= Whishes
+= Improving / bug fixing
 ===============================================================================
-* Add null tests for the CIBA class?
-* Automated testing of enums? is it possible / necessary?
-* Is testing of the toString() method an option.
-** Test if toString does something else then Object.toString.
+* This project is not under active maintenance, but should be fully functional.
+  The best way to get changes done if you are interested in making it better is
+  to fork the project, make the changes and provide me with a pull request. I
+  will review, incorporate and release the software if the changes are nice.
+  I will also give credit where credit is due.
+===============================================================================
+= Notes
+===============================================================================
+* This project has been an exercise in reflection and has proven useful on a 
+  number of occasions. The tests done are actually real tests and usefull tests
+  but this module should not be really nessesary to use IMHO. If you do your 
+  testing the correct way all the POJO code should be tested by other unit tests. 
+  POJO's should not be Mocked away so all used functionallity should be tested 
+  by the classes that use them.
