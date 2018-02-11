@@ -35,7 +35,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 ===============================================================================
-= GOAL
+= Goal
 ===============================================================================
 The goal of this jar is to perform automated useful unit tests on "simple" beans
 of different kinds.
@@ -60,7 +60,7 @@ that the tests are useful.
 * Java 1.6 (should there be a 1.5 build to?)
 
  ===============================================================================
-= RULEZ
+= Rulez
 ===============================================================================
 The tests done on the beans are described below...
 
