@@ -96,7 +96,7 @@ The tests done on the beans are described below...
 This project is synced to the maven central repository so you can add it as a
 dependency to your maven project.
 
-More explanation here: http://ivonet.github.com/beanunit/
+More explanation here: https://ivonet.github.io/beanunit/
 ===============================================================================
 = Improving / bug fixing
 ===============================================================================
